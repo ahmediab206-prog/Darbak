@@ -11,7 +11,7 @@
 <script>
 var DARBAK = {
   API_URL:   'https://script.google.com/macros/s/AKfycbwEi-xMsof9eV-uK0yrhGNkWyWAWLGdB2ecAnqlUB0fYsMPpb-_zMGq5C8f7NrugEUV/exec',
-  API_TOKEN: '27bcd1bf035b41b1b14ef8083ff3bde736c64ef7'
+  API_TOKEN: '59f9163c13a94738a8421c5e82c98a0d4d3b5a43'
 };
 </script>
 <!-- ========================================================== -->
@@ -164,7 +164,8 @@ section{padding:50px 0}
 .specs b{display:block;font-size:13px;color:var(--ink)}
 .c .pr{border-top:1px dashed var(--line);padding-top:12px;margin-top:auto;display:flex;align-items:center;gap:10px}
 .c .pr .n{font-size:23px;font-weight:900;color:var(--p);letter-spacing:-.8px}
-.c .pr small{color:var(--mut);font-size:11.5px;display:block;font-weight:600}
+.c .pr small{color:var(--mut);font-size:11.5px;display:block;font-weight:600;white-space:nowrap}
+.c .im img{background:#e9efed}
 
 /* ===== تفاصيل السيارة ===== */
 .det{display:grid;grid-template-columns:1.35fr .65fr;gap:24px;align-items:start}
@@ -538,6 +539,22 @@ function ph(){ return 'data:image/svg+xml;utf8,'+encodeURIComponent(
   '<text x="150" y="105" text-anchor="middle" font-size="16" fill="#86999" font-family="sans-serif">صورة السيارة</text></svg>'); }
 function imgOf(a){ return (a && a.length) ? a[0] : ph(); }
 
+/* تصغير الصورة حسب المكان اللي هتتعرض فيه — أهم عامل في سرعة الصفحة */
+function thumb(u,w){
+  u=String(u||'');
+  if(!u || u.indexOf('data:')===0) return u||ph();
+  if(/[?&]width=\d+/.test(u))  return u.replace(/([?&]width=)\d+/,'$1'+w);
+  if(/[?&]sz=w\d+/.test(u))    return u.replace(/([?&]sz=w)\d+/,'$1'+w);   /* Google Drive */
+  if(u.indexOf('Special:FilePath')!==-1) return u+(u.indexOf('?')===-1?'?':'&')+'width='+w;
+  return u;
+}
+
+/* أي صورة تفشل في التحميل تتحوّل للصورة البديلة بدل ما يظهر نص الـalt */
+document.addEventListener('error', function(e){
+  var t = e.target;
+  if(t && t.tagName === 'IMG' && !t.dataset.fb){ t.dataset.fb='1'; t.alt=''; t.src = ph(); }
+}, true);
+
 /* ---------- الاتصال ---------- */
 function qs(o){ var p=[]; Object.keys(o||{}).forEach(function(k){ var v=o[k];
   if(v===''||v==null||v===false) return;
@@ -668,12 +685,26 @@ document.addEventListener('DOMContentLoaded', function(){
       'افتح ملف index.html وحط رابط الـWeb App والتوكن في أول الملف (سطر ١٣ و ١٤).</div>';
     route(); return;
   }
-  apiGet('home').then(function(d){
-    HOME=d; CUR=d.settings.currency||'ر.س'; VATP=num(d.settings.tax_percent)||15;
-    paintHome(d); route(); search();
+  /* ١) ارسم فورًا من الكاش المحلي لو موجود — الصفحة تظهر كاملة بدون انتظار */
+  var cached=null;
+  try{
+    var raw=localStorage.getItem('darbak_home');
+    if(raw){ var o=JSON.parse(raw); if(Date.now()-o.t < 21600000) cached=o.d; }
+  }catch(e){}
+  if(cached){ HOME=cached; CUR=cached.settings.currency||'ر.س';
+    VATP=num(cached.settings.tax_percent)||15; paintHome(cached); }
+  route();
+  skeletonCards();
+
+  /* ٢) نداء واحد يجيب الرئيسية والنتائج مع بعض */
+  apiGet('boot',searchParams()).then(function(d){
+    HOME=d.home; CUR=d.home.settings.currency||'ر.س'; VATP=num(d.home.settings.tax_percent)||15;
+    paintHome(d.home);
+    renderSearch(d.search);
+    try{ localStorage.setItem('darbak_home',JSON.stringify({t:Date.now(),d:d.home})); }catch(e){}
   }).catch(function(e){
     el('r-list').innerHTML='<div class="empty"><b>تعذر الاتصال بقاعدة البيانات</b>'+esc(e.message)+'</div>';
-    route(); toast(e.message,true);
+    toast(e.message,true);
   });
 });
 
@@ -711,7 +742,7 @@ function paintHome(d){
   el('f-cr').textContent='© '+new Date().getFullYear()+' '+(s.site_name||'دربك')+' — جميع الحقوق محفوظة';
 
   var top=(d.categories||[]).filter(function(c){ return c.image; })[0];
-  el('heroimg').innerHTML=(top?'<img src="'+esc(top.image)+'" alt="">':'')+
+  el('heroimg').innerHTML=(top?'<img src="'+esc(thumb(top.image,800))+'" alt="" fetchpriority="high">':'')+
     '<div class="fade"></div>'+
     '<div class="fl a">متاح الآن <b>'+d.stats.cars_available+' سيارة</b></div>'+
     '<div class="cap"><b>من '+money(d.stats.price_from)+' / يوم</b>'+
@@ -728,7 +759,7 @@ function paintHome(d){
   el('cats').innerHTML=(d.categories||[]).map(function(c){
     return '<div class="cat'+(Q.cat===c.category_id?' on':'')+'" data-cat="'+esc(c.category_id)+'" '+
       'onclick="pickCat(\''+esc(c.category_id)+'\')">'+
-      '<div class="im"><img src="'+esc(c.image||ph())+'" alt="'+esc(c.name)+'" loading="lazy"></div>'+
+      '<div class="im"><img src="'+esc(thumb(c.image,320))+'" alt="'+esc(c.name)+'" loading="lazy" decoding="async"></div>'+
       '<div class="bd"><b>'+esc(c.icon||'')+' '+esc(c.name)+'</b>'+
       '<small>من '+money(c.price_from)+' · '+c.count+' متاحة</small></div></div>';
   }).join('');
@@ -841,32 +872,37 @@ function clearFilters(){ Q.filters={}; paintFilters(); search(true); }
 /* ===========================================================
    البحث
    =========================================================== */
-function search(scroll){
-  if(!READY) return;
-  var p=Object.assign({
+function searchParams(){
+  return Object.assign({
     pickup_branch_id:Q.pb, dropoff_branch_id:Q.db||Q.pb,
     pickup_at:Q.from, dropoff_at:Q.to, category_id:Q.cat,
     with_driver:Q.mode==='driver', delivery:Q.deliv, sort:Q.sort
   }, Q.filters);
-
-  el('f-go').disabled=true; el('f-go').textContent='...';
+}
+function skeletonCards(){
   el('r-list').innerHTML='<div class="cards">'+'<div class="skel" style="height:330px"></div>'.repeat(3)+'</div>';
-
-  apiGet('search',p).then(function(d){
-    el('f-go').disabled=false; el('f-go').textContent='ابحث';
-    var br=(HOME&&HOME.branches||[]).filter(function(b){ return b.branch_id===Q.pb; })[0];
-    var cat=(HOME&&HOME.categories||[]).filter(function(c){ return c.category_id===Q.cat; })[0];
-    el('r-h2').textContent=cat?cat.name:'السيارات المتاحة';
-    el('r-sub').textContent=(br?br.name:'كل الفروع')+' · '+d.days+' يوم · '+
-      el('f-from').value.replace('T',' ')+' ← '+el('f-to').value.replace('T',' ');
-    el('r-cnt').textContent=d.available_count+' متاحة من '+d.count;
-    el('r-vat').textContent='الأسعار شاملة ضريبة '+d.tax_percent+'٪';
-    paintCards(d);
-    if(scroll) el('results').scrollIntoView({behavior:'smooth',block:'start'});
-  }).catch(function(e){
-    el('f-go').disabled=false; el('f-go').textContent='ابحث';
-    el('r-list').innerHTML='<div class="empty"><b>تعذر البحث</b>'+esc(e.message)+'</div>';
-  });
+}
+function renderSearch(d,scroll){
+  el('f-go').disabled=false; el('f-go').textContent='ابحث';
+  var br=(HOME&&HOME.branches||[]).filter(function(b){ return b.branch_id===Q.pb; })[0];
+  var cat=(HOME&&HOME.categories||[]).filter(function(c){ return c.category_id===Q.cat; })[0];
+  el('r-h2').textContent=cat?cat.name:'السيارات المتاحة';
+  el('r-sub').textContent=(br?br.name:'كل الفروع')+' · '+d.days+' يوم · '+
+    el('f-from').value.replace('T',' ')+' ← '+el('f-to').value.replace('T',' ');
+  el('r-cnt').textContent=d.available_count+' متاحة من '+d.count;
+  el('r-vat').textContent='الأسعار شاملة ضريبة '+d.tax_percent+'٪';
+  paintCards(d);
+  if(scroll) el('results').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function search(scroll){
+  if(!READY) return;
+  el('f-go').disabled=true; el('f-go').textContent='...';
+  skeletonCards();
+  apiGet('search',searchParams()).then(function(d){ renderSearch(d,scroll); })
+    .catch(function(e){
+      el('f-go').disabled=false; el('f-go').textContent='ابحث';
+      el('r-list').innerHTML='<div class="empty"><b>تعذر البحث</b>'+esc(e.message)+'</div>';
+    });
 }
 
 function paintCards(d){
@@ -881,7 +917,7 @@ function paintCards(d){
       : c.duration_percent ? '<span class="badge a">خصم '+c.duration_percent+'٪</span>'
       : '<span class="badge">إلغاء مجاني</span>';
     return '<div class="c">'+
-      '<div class="im"><img src="'+esc(imgOf(c.images))+'" alt="'+esc(c.name)+'" loading="lazy">'+badge+
+      '<div class="im"><img src="'+esc(thumb(imgOf(c.images),430))+'" alt="'+esc(c.name)+'" loading="lazy" decoding="async">'+badge+
       (c.available?'<span class="units">'+c.units_left+' متاحة</span>':'')+'</div>'+
       '<div class="bd">'+
         '<h3>'+esc(c.name)+' <span style="font-size:12px;color:var(--mut);font-weight:600">'+c.year+'</span></h3>'+
@@ -932,9 +968,10 @@ function paintCar(c){
 
   el('car-box').innerHTML=
   '<div class="det"><div>'+
-    '<div class="gal"><div class="main"><img id="gmain" src="'+esc(imgs[0])+'" alt="'+esc(c.name)+'"></div>'+
+    '<div class="gal"><div class="main"><img id="gmain" src="'+esc(thumb(imgs[0],900))+'" alt="'+esc(c.name)+'" fetchpriority="high"></div>'+
       (imgs.length>1?'<div class="thumbs">'+imgs.map(function(u,i){
-        return '<div class="'+(i?'':'on')+'" onclick="swap('+i+',\''+esc(u)+'\')"><img src="'+esc(u)+'" alt=""></div>';
+        return '<div class="'+(i?'':'on')+'" onclick="swap('+i+',\''+esc(thumb(u,900))+'\')">'+
+          '<img src="'+esc(thumb(u,180))+'" alt="" loading="lazy" decoding="async"></div>';
       }).join('')+'</div>':'')+'</div>'+
 
     '<div class="box" style="margin-top:16px">'+
@@ -973,7 +1010,7 @@ function paintCar(c){
     (c.similar.length?'<div class="box"><h4>سيارات مشابهة</h4><div class="cards" style="grid-template-columns:repeat(4,1fr)">'+
       c.similar.map(function(s){
         return '<div class="c" onclick="go(\'#/car/'+esc(s.car_id)+'\')" style="cursor:pointer">'+
-          '<div class="im" style="height:100px"><img src="'+esc(s.image||ph())+'" alt=""></div>'+
+          '<div class="im" style="height:100px"><img src="'+esc(thumb(s.image,300))+'" alt="" loading="lazy" decoding="async"></div>'+
           '<div class="bd" style="padding:10px"><b style="font-size:13px">'+esc(s.name)+'</b>'+
           '<small style="color:var(--mut);display:block;font-size:11.5px">'+s.year+' · '+money(s.price_day)+'/يوم</small></div></div>';
       }).join('')+'</div></div>':'')+
@@ -1152,7 +1189,7 @@ function stepReview(){
   el('bk-main').innerHTML='<div class="box"><h4>مراجعة الحجز</h4>'+
     '<div style="display:flex;gap:14px;align-items:center;margin-bottom:14px">'+
       '<div style="width:130px;height:88px;border-radius:12px;overflow:hidden;background:#e9efed;flex:none">'+
-      '<img src="'+esc(imgOf(BK.car.images))+'" style="width:100%;height:100%;object-fit:cover"></div>'+
+      '<img src="'+esc(thumb(imgOf(BK.car.images),300))+'" style="width:100%;height:100%;object-fit:cover"></div>'+
       '<div><b style="font-size:18px">'+esc(BK.car.name)+' '+BK.car.year+'</b>'+
       '<div style="color:var(--mut);font-size:13px;font-weight:600">'+esc(BK.car.category_name)+' — أو مماثل من نفس الفئة</div></div></div>'+
     '<div class="kv"><span>الاستلام</span><b>'+esc(Q.from.replace('T',' '))+'</b></div>'+
@@ -1381,7 +1418,7 @@ function bkCard(b){
 
   return '<div class="bk">'+
     '<div class="hd">'+
-      '<div class="im"><img src="'+esc(b.car_image||ph())+'" alt=""></div>'+
+      '<div class="im"><img src="'+esc(thumb(b.car_image,240))+'" alt="" loading="lazy" decoding="async"></div>'+
       '<div><b style="font-size:16px">'+esc(b.car_name||b.category_name)+'</b>'+
       '<div style="color:var(--mut);font-size:12.5px;font-weight:600">'+esc(b.booking_id)+
       (b.plate_no?(' · لوحة '+esc(b.plate_no)):'')+'</div></div>'+
@@ -1668,7 +1705,7 @@ function openBooking(id){
         (d.pool||[]).map(function(c){
           return '<div class="ph'+(b.car_id===c.car_id?' on':'')+'" style="aspect-ratio:auto;padding:8px" '+
             'onclick="assignCar(\''+esc(b.booking_id)+'\',\''+esc(c.car_id)+'\')">'+
-            '<div><img src="'+esc(c.image||ph())+'" style="width:100%;height:58px;object-fit:cover;border-radius:7px">'+
+            '<div><img src="'+esc(thumb(c.image,220))+'" loading="lazy" style="width:100%;height:58px;object-fit:cover;border-radius:7px">'+
             '<b style="display:block;font-size:12px;margin-top:4px">'+esc(c.name)+'</b>'+
             '<small style="font-size:10.5px">'+esc(c.plate_no)+' · '+esc(c.branch_id)+'</small></div></div>';
         }).join('')+'</div>'
