@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
@@ -6,16 +6,12 @@
 <title>دربك Darbak — تأجير سيارات</title>
 
 <!-- ==========================================================
-     ✏️  الإعدادات — عدّل السطرين دول بس
+     ✏️  عدّل السطرين دول بس
      ========================================================== -->
 <script>
 var DARBAK = {
-
-  // رابط الـWeb App من Apps Script (لازم ينتهي بـ /exec)
-  API_URL: 'https://script.google.com/macros/s/AKfycbwEi-xMsof9eV-uK0yrhGNkWyWAWLGdB2ecAnqlUB0fYsMPpb-_zMGq5C8f7NrugEUV/exec',
-
-  // التوكن من منيو ⚙️ دربك → توليد توكن API
-  API_TOKEN: '539105784a6c41d3aa025dbe571fd410fdd7b442'
+  API_URL:   'ضع_رابط_الويب_هنا',
+  API_TOKEN: 'ضع_التوكن_هنا'
 };
 </script>
 <!-- ========================================================== -->
@@ -23,966 +19,2026 @@ var DARBAK = {
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{
-  --p:#0e5f55; --p-d:#0a473f; --p-l:#e6f2f0; --acc:#f0a500;
-  --ink:#0f1a18; --mut:#64736f; --bg:#f6f8f7; --line:#e2eae7;
-  --ok:#0f9d6e; --warn:#e8820c; --err:#c0392b;
+  --p:#0e5f55; --p-d:#0a473f; --p-l:#e6f2f0; --acc:#f0a500; --acc-d:#8a5f00;
+  --ink:#0f1a18; --mut:#64736f; --bg:#f4f7f6; --card:#fff; --line:#e2eae7;
+  --ok:#0f9d6e; --warn:#e8820c; --err:#c0392b; --r:14px;
 }
 *{box-sizing:border-box}
+html,body{direction:rtl}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:Cairo,system-ui,sans-serif;font-size:15px}
 a{color:inherit;text-decoration:none}
-h1,h2,h3{font-weight:900;letter-spacing:-.6px}
-.wrap{max-width:1200px;margin:0 auto;padding:0 20px}
+h1,h2,h3,h4{font-weight:900;letter-spacing:-.6px;margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+.wrap{max-width:1240px;margin:0 auto;padding:0 20px}
+.sp{flex:1}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;cursor:pointer;
-     font-family:inherit;font-weight:700;border-radius:11px;padding:11px 18px;font-size:15px;transition:.15s}
+  font-family:inherit;font-weight:700;border-radius:11px;padding:11px 18px;font-size:15px;transition:.15s}
 .btn-p{background:var(--p);color:#fff}.btn-p:hover{background:var(--p-d)}
 .btn-a{background:var(--acc);color:#3a2800}
 .btn-o{background:#fff;color:var(--p);border:1.5px solid var(--p)}
 .btn-g{background:#fff;color:var(--ink);border:1px solid var(--line)}
 .btn-r{background:#fff;color:var(--err);border:1px solid #f0c8c2}
-.btn-sm{padding:7px 12px;font-size:13px;border-radius:9px}
-.btn:disabled{opacity:.55;cursor:default}
-[hidden]{display:none !important}
-
-/* ===== الموقع ===== */
-.top{background:var(--p-d);color:#bcd8d3;font-size:13px}
-.top .wrap{display:flex;gap:20px;height:40px;align-items:center;flex-wrap:wrap}
-.top .sp{flex:1}
-header{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30}
-.nav{display:flex;align-items:center;gap:26px;height:72px}
-.logo{display:flex;align-items:center;gap:10px}
-.mark{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--p),#13877a);
-      display:grid;place-items:center;box-shadow:0 6px 16px -8px rgba(14,95,85,.9);flex:none}
-.mark svg{width:24px}
-.lw{line-height:1.1}.lw b{font-size:21px;font-weight:900;display:block}
-.lw small{font-size:11px;color:var(--mut);letter-spacing:2.5px;font-weight:700}
-.nav nav{display:flex;gap:22px;color:var(--mut);font-weight:700}
-.nav nav a:hover{color:var(--p)}
-.nav .sp{flex:1}
-
-.hero{background:radial-gradient(120% 90% at 85% 0%,rgba(14,95,85,.10),transparent 60%),
-      linear-gradient(180deg,#fff,#eef5f3);border-bottom:1px solid var(--line);padding:50px 0 0}
-.hero-in{display:grid;grid-template-columns:1.05fr .95fr;gap:36px;align-items:center}
-.kick{display:inline-flex;align-items:center;gap:8px;background:var(--p-l);color:var(--p);
-      border:1px solid #cfe5e1;font-weight:700;font-size:13px;padding:7px 14px;border-radius:999px}
-.hero h1{font-size:46px;line-height:1.2;margin:16px 0 12px}
-.hero h1 mark{background:linear-gradient(transparent 60%,rgba(240,165,0,.45) 60%);color:inherit;padding:0 3px}
-.lead{color:var(--mut);font-size:17.5px;line-height:1.9;margin:0 0 20px;max-width:520px}
-.trust{display:flex;gap:20px;flex-wrap:wrap;color:#3f514d;font-size:14px;font-weight:700}
-.trust span:before{content:"✓";display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;
-      background:var(--ok);color:#fff;font-size:11px;margin-inline-end:7px;vertical-align:-3px}
-.hvis{position:relative;height:300px;border-radius:26px;background:linear-gradient(160deg,#0e5f55,#072e29);
-      display:grid;place-items:center;overflow:hidden;border:1px solid var(--line)}
-.hvis:before{content:"";position:absolute;width:360px;height:360px;border-radius:50%;
-      background:radial-gradient(circle,rgba(240,165,0,.3),transparent 65%)}
-.hvis svg.car{position:relative;width:88%}
-.fl{position:absolute;background:#fff;border-radius:14px;padding:10px 14px;font-size:13.5px;font-weight:700;
-    box-shadow:0 14px 30px -18px rgba(0,0,0,.45)}
-.fl.a{top:18px;inset-inline-start:18px}.fl.a i{color:var(--p);font-style:normal}
-.fl.b{bottom:18px;inset-inline-end:18px;text-align:center}.fl.b b{display:block;font-size:20px;color:var(--p)}
-
-.sbox{background:#fff;border:1px solid var(--line);border-radius:18px;padding:8px;margin-top:34px;
-      box-shadow:0 26px 60px -36px rgba(10,71,63,.45);transform:translateY(28px)}
-.tabs{display:flex;gap:6px;padding:6px 6px 0;flex-wrap:wrap}
-.tab{padding:10px 18px;border-radius:11px;font-weight:800;color:var(--mut);cursor:pointer}
-.tab.on{background:var(--p-l);color:var(--p)}
-.sgrid{display:grid;grid-template-columns:1.15fr 1.15fr 1fr 1fr auto;gap:10px;padding:10px}
-.fld{border:1px solid var(--line);border-radius:12px;padding:8px 12px;background:#fbfdfc}
-.fld label{display:block;font-size:11.5px;color:var(--mut);font-weight:700;margin-bottom:2px}
-.fld select,.fld input{border:0;background:transparent;font-family:inherit;font-weight:700;
-      font-size:14.5px;color:var(--ink);width:100%;padding:3px 0;outline:none}
-.srow{display:flex;align-items:center;gap:18px;padding:2px 14px 12px;color:var(--mut);font-size:13.5px;flex-wrap:wrap}
-.srow label{display:flex;align-items:center;gap:7px;cursor:pointer;font-weight:600}
-.srow input{accent-color:var(--p);width:16px;height:16px}
-
-section{padding:56px 0}
-.sh{display:flex;align-items:flex-end;gap:14px;margin-bottom:22px}
-.sh h2{font-size:30px;margin:0}.sh p{color:var(--mut);margin:6px 0 0;font-size:14.5px}
-.sh .sp{flex:1}.sh a{color:var(--p);font-weight:800;font-size:14px;cursor:pointer}
-.cats{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
-.cat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 10px;text-align:center;
-     font-weight:800;cursor:pointer;transition:.15s}
-.cat span{display:block;font-size:26px;margin-bottom:6px}
-.cat small{display:block;color:var(--mut);font-weight:700;font-size:12px;margin-top:3px}
-.cat:hover,.cat.on{border-color:var(--p);transform:translateY(-3px);box-shadow:0 14px 26px -18px rgba(14,95,85,.7)}
-
-.sortbar{display:flex;align-items:center;gap:9px;background:#fff;border:1px solid var(--line);
-         border-radius:13px;padding:10px 14px;margin-bottom:14px;font-size:14px;flex-wrap:wrap}
-.sortbar .sp{flex:1}
-.pill{border:1px solid var(--line);border-radius:999px;padding:6px 14px;color:var(--mut);
-      font-weight:700;cursor:pointer;font-size:13px}
-.pill.on{background:var(--p-l);border-color:var(--p);color:var(--p)}
-.row{background:#fff;border:1px solid var(--line);border-radius:16px;display:grid;
-     grid-template-columns:236px 1fr 214px;overflow:hidden;margin-bottom:14px;transition:.15s}
-.row:hover{box-shadow:0 18px 40px -30px rgba(10,71,63,.6);border-color:#cfe0dc}
-.row .img{background:linear-gradient(160deg,#eef4f2,#e2ece9);display:grid;place-items:center;
-          position:relative;min-height:176px;overflow:hidden}
-.row .img svg{width:86%}
-.row .img img{width:100%;height:100%;object-fit:cover}
-.badge{position:absolute;top:10px;inset-inline-start:10px;background:var(--ok);color:#fff;
-       font-size:11.5px;font-weight:800;padding:4px 10px;border-radius:7px}
-.badge.a{background:var(--acc);color:#3a2800}
-.row .mid{padding:16px 18px;border-inline-start:1px solid var(--line)}
-.row h3{margin:0 0 3px;font-size:19.5px}
-.row .sub{color:var(--mut);font-size:13px;font-weight:600}
-.chips{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
-.chip{background:#f2f7f5;border:1px solid var(--line);border-radius:9px;padding:5px 10px;
-      font-size:12.5px;color:#39504b;font-weight:700}
-.rate{color:var(--mut);font-size:13px;font-weight:600}
-.rate i{color:var(--acc);font-style:normal}.rate b{color:var(--ink)}
-.row .right{border-inline-start:1px solid var(--line);padding:16px;display:flex;flex-direction:column;
-            justify-content:center;gap:8px;text-align:center;background:#fbfdfc}
-.row .right .big{font-size:27px;font-weight:900;color:var(--p);letter-spacing:-1px}
-.row .right small{color:var(--mut);font-size:12.5px;font-weight:600}
-
-.band{background:linear-gradient(110deg,#0e5f55,#13877a 65%,#17a08f);border-radius:26px;padding:38px;
-      display:grid;grid-template-columns:1.35fr .65fr;gap:26px;align-items:center;color:#fff;
-      position:relative;overflow:hidden}
-.band:before{content:"";position:absolute;width:420px;height:420px;border-radius:50%;
-      background:radial-gradient(circle,rgba(240,165,0,.35),transparent 65%);inset-inline-end:-80px;top:-140px}
-.band h2{font-size:34px;margin:0 0 10px;position:relative}
-.band p{margin:0;font-size:16.5px;opacity:.92;line-height:1.85;position:relative}
-.code{background:rgba(0,0,0,.25);border:2px dashed var(--acc);border-radius:16px;padding:18px;
-      text-align:center;position:relative}
-.code b{display:block;font-size:26px;letter-spacing:5px;color:#ffd98a;font-weight:900}
-.code small{color:#cfe5e1}
-
-.why{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
-.w{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px}
-.w .ic{width:44px;height:44px;border-radius:13px;background:var(--p-l);display:grid;place-items:center;
-       font-size:21px;margin-bottom:12px}
-.w h4{margin:0 0 6px;font-size:17px}.w p{color:var(--mut);font-size:13.8px;line-height:1.85;margin:0}
-.steps{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
-.step{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px}
-.step b{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--p);
-        color:#fff;margin-bottom:10px;font-weight:900}
-.step h4{margin:0 0 5px;font-size:15.5px}.step p{color:var(--mut);margin:0;font-size:13px;line-height:1.75}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start}
-.it{background:#fff;border:1px solid var(--line);border-radius:13px;padding:15px 18px;margin-bottom:10px;
-    display:flex;align-items:center;font-weight:700;cursor:pointer}
-.it span{margin-inline-start:auto;color:var(--p);font-size:19px}
-.ans{color:var(--mut);font-weight:600;font-size:14px;line-height:1.9;padding:0 18px 15px;margin-top:-10px;
-     background:#fff;border:1px solid var(--line);border-top:0;border-radius:0 0 13px 13px;margin-bottom:10px}
-.branch{background:#fff;border:1px solid var(--line);border-radius:13px;padding:15px 18px;margin-bottom:10px;
-        display:flex;gap:12px;align-items:center}
-.branch .d{width:38px;height:38px;border-radius:11px;background:var(--p-l);display:grid;place-items:center;
-           color:var(--p);font-weight:900;flex:none}
-.branch small{display:block;color:var(--mut);font-weight:600}
-.branch .sp{flex:1}
-.quotes{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.q{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px}
-.q p{color:var(--mut);line-height:1.9;font-size:14.5px;margin:0 0 14px;font-weight:600}
-.q .who{display:flex;align-items:center;gap:10px}
-.av{width:38px;height:38px;border-radius:50%;background:var(--p);color:#fff;display:grid;
-    place-items:center;font-weight:800}
-footer{background:var(--ink);color:#9aaba7;padding:46px 0 30px;font-size:14px;margin-top:8px}
-.fg4{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:26px}
-.fg4 h4{color:#fff;margin:0 0 12px;font-size:15px}
-.fg4 a{display:block;padding:5px 0}.fg4 a:hover{color:#fff}
-.fbot{border-top:1px solid #253330;margin-top:28px;padding-top:18px;display:flex;gap:16px;
-      flex-wrap:wrap;font-size:13px}
-.fbot .sp{flex:1}
-
-.empty{background:#fff;border:1px dashed var(--line);border-radius:16px;padding:34px;text-align:center;color:var(--mut)}
+.btn-sm{padding:7px 13px;font-size:13px;border-radius:9px}
+.btn-lg{padding:14px 26px;font-size:16px}
+.btn:disabled{opacity:.5;cursor:default}
+.tag{display:inline-block;padding:3px 9px;border-radius:7px;font-size:11.5px;font-weight:800;background:#eef3f1;color:#41534f}
+.tag.ok{background:#e3f6ee;color:#0b6e4d}.tag.no{background:#fdeaea;color:#a33}
+.tag.w{background:#fdf2e0;color:#8a5f00}.tag.b{background:#e7eefb;color:#2b4a8a}
+.msg{border-radius:11px;padding:12px 15px;font-size:13.5px;font-weight:700;margin-bottom:14px;line-height:1.7}
+.msg.err{background:#fdeaea;color:#a33}.msg.ok{background:#e3f6ee;color:#0b6e4d}
+.msg.info{background:#fff8e6;color:#6b5312}
+.empty{background:#fff;border:1px dashed var(--line);border-radius:var(--r);padding:34px;text-align:center;color:var(--mut)}
 .empty b{display:block;color:var(--ink);font-size:17px;margin-bottom:6px}
 .skel{background:linear-gradient(90deg,#eef2f0,#f8fbfa,#eef2f0);background-size:200% 100%;
-      animation:sk 1.2s infinite;border-radius:14px;height:120px}
+  animation:sk 1.2s infinite;border-radius:var(--r)}
 @keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
 .toast{position:fixed;inset-inline-start:50%;transform:translateX(-50%);bottom:24px;background:var(--ink);
-       color:#fff;padding:13px 22px;border-radius:12px;font-weight:700;z-index:999;
-       box-shadow:0 18px 40px -20px #000;max-width:90vw}
+  color:#fff;padding:13px 22px;border-radius:12px;font-weight:700;z-index:9999;box-shadow:0 18px 40px -20px #000;max-width:92vw}
 .toast.err{background:var(--err)}
+.lbl{font-size:12px;color:var(--mut);font-weight:800;margin-bottom:5px;display:block}
+input,select,textarea{font-family:inherit;font-size:14.5px;border:1px solid var(--line);border-radius:10px;
+  padding:10px 12px;background:#fbfdfc;color:var(--ink);outline:none;width:100%}
+input:focus,select:focus,textarea:focus{border-color:var(--p);background:#fff}
+textarea{min-height:80px;resize:vertical}
+
+/* ===== شريط علوي ===== */
+.top{background:var(--p-d);color:#bcd8d3;font-size:13px}
+.top .wrap{display:flex;gap:18px;height:38px;align-items:center;flex-wrap:wrap}
+.top a:hover{color:#fff}
+header{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:50}
+.nav{display:flex;align-items:center;gap:24px;height:70px}
+.logo{display:flex;align-items:center;gap:10px;cursor:pointer}
+.mark{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--p),#13877a);
+  display:grid;place-items:center;flex:none;box-shadow:0 6px 16px -8px rgba(14,95,85,.9)}
+.mark svg{width:24px}
+.lw b{font-size:21px;display:block;line-height:1}
+.lw small{font-size:10.5px;color:var(--mut);letter-spacing:2.5px;font-weight:700}
+.nav nav{display:flex;gap:20px;color:var(--mut);font-weight:700}
+.nav nav a:hover,.nav nav a.on{color:var(--p)}
+
+/* ===== هيرو ===== */
+.hero{background:radial-gradient(120% 90% at 85% 0%,rgba(14,95,85,.10),transparent 60%),
+  linear-gradient(180deg,#fff,#eaf2f0);border-bottom:1px solid var(--line);padding:44px 0 0}
+.hero-in{display:grid;grid-template-columns:1.02fr .98fr;gap:34px;align-items:center}
+.kick{display:inline-flex;align-items:center;gap:8px;background:var(--p-l);color:var(--p);
+  border:1px solid #cfe5e1;font-weight:700;font-size:13px;padding:7px 14px;border-radius:999px}
+.hero h1{font-size:44px;line-height:1.22;margin:16px 0 12px}
+.hero h1 mark{background:linear-gradient(transparent 60%,rgba(240,165,0,.45) 60%);color:inherit;padding:0 3px}
+.lead{color:var(--mut);font-size:17px;line-height:1.9;margin:0 0 18px;max-width:520px}
+.trust{display:flex;gap:18px;flex-wrap:wrap;color:#3f514d;font-size:13.5px;font-weight:700}
+.trust span:before{content:"✓";display:inline-grid;place-items:center;width:17px;height:17px;border-radius:50%;
+  background:var(--ok);color:#fff;font-size:10.5px;margin-inline-end:6px;vertical-align:-2px}
+.heroimg{position:relative;height:320px;border-radius:24px;overflow:hidden;background:#dce7e4;
+  border:1px solid var(--line)}
+.heroimg img{width:100%;height:100%;object-fit:cover}
+.heroimg .fade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(7,46,41,.75),transparent 65%)}
+.heroimg .cap{position:absolute;inset-inline-start:20px;bottom:20px;color:#fff}
+.heroimg .cap b{font-size:22px;display:block}
+.heroimg .cap small{opacity:.85}
+.fl{position:absolute;background:#fff;border-radius:13px;padding:9px 13px;font-size:13px;font-weight:700;
+  box-shadow:0 14px 30px -18px rgba(0,0,0,.5)}
+.fl.a{top:16px;inset-inline-end:16px}
+.fl.a b{color:var(--p)}
+
+/* ===== شريط البحث ===== */
+.sbox{background:#fff;border:1px solid var(--line);border-radius:18px;padding:8px;margin-top:30px;
+  box-shadow:0 26px 60px -36px rgba(10,71,63,.45);transform:translateY(28px);position:relative;z-index:10}
+.tabs{display:flex;gap:6px;padding:6px 6px 0;flex-wrap:wrap}
+.tab{padding:10px 17px;border-radius:11px;font-weight:800;color:var(--mut);cursor:pointer;font-size:14px}
+.tab.on{background:var(--p-l);color:var(--p)}
+.sgrid{display:grid;grid-template-columns:1.1fr 1.1fr 1fr 1fr auto;gap:9px;padding:9px}
+.fld{border:1px solid var(--line);border-radius:12px;padding:7px 11px;background:#fbfdfc}
+.fld .lbl{margin-bottom:1px}
+.fld select,.fld input{border:0;background:transparent;padding:3px 0;font-weight:700;font-size:14px}
+.srow{display:flex;align-items:center;gap:16px;padding:0 13px 11px;color:var(--mut);font-size:13px;flex-wrap:wrap}
+.srow label{display:flex;align-items:center;gap:6px;cursor:pointer;font-weight:600}
+.srow input[type=checkbox]{width:16px;height:16px;accent-color:var(--p)}
+
+/* ===== أقسام ===== */
+section{padding:50px 0}
+.sh{display:flex;align-items:flex-end;gap:14px;margin-bottom:20px}
+.sh h2{font-size:28px}.sh p{color:var(--mut);margin:6px 0 0;font-size:14px}
+.sh a{color:var(--p);font-weight:800;font-size:14px;cursor:pointer}
+.cats{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+.cat{background:#fff;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;cursor:pointer;transition:.15s}
+.cat .im{height:92px;background:#e9efed;overflow:hidden}
+.cat .im img{width:100%;height:100%;object-fit:cover}
+.cat .bd{padding:11px 12px;text-align:center}
+.cat b{font-size:14.5px}
+.cat small{display:block;color:var(--mut);font-weight:700;font-size:11.5px;margin-top:3px}
+.cat:hover,.cat.on{border-color:var(--p);transform:translateY(-3px);box-shadow:0 14px 26px -18px rgba(14,95,85,.7)}
+
+/* ===== كروت النتائج ===== */
+.sortbar{display:flex;align-items:center;gap:9px;background:#fff;border:1px solid var(--line);
+  border-radius:13px;padding:10px 14px;margin-bottom:14px;font-size:14px;flex-wrap:wrap}
+.pill{border:1px solid var(--line);border-radius:999px;padding:6px 14px;color:var(--mut);
+  font-weight:700;cursor:pointer;font-size:13px}
+.pill.on{background:var(--p-l);border-color:var(--p);color:var(--p)}
+.results{display:grid;grid-template-columns:270px 1fr;gap:20px;align-items:start}
+.panel{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:16px;position:sticky;top:86px}
+.fg{border-top:1px solid var(--line);padding:13px 0 3px}
+.fg b{display:block;font-size:13.5px;margin-bottom:8px}
+.fg label{display:flex;align-items:center;gap:8px;color:#4b5b57;font-size:13.5px;padding:3px 0;cursor:pointer;font-weight:600}
+.fg input[type=checkbox],.fg input[type=radio]{width:16px;height:16px;accent-color:var(--p)}
+.two-in{display:flex;gap:8px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.c{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;display:flex;
+  flex-direction:column;transition:.15s}
+.c:hover{box-shadow:0 20px 44px -30px rgba(10,71,63,.55);border-color:#cfe0dc}
+.c .im{position:relative;height:186px;background:#e9efed;overflow:hidden}
+.c .im img{width:100%;height:100%;object-fit:cover;transition:.4s}
+.c:hover .im img{transform:scale(1.05)}
+.c .badge{position:absolute;top:10px;inset-inline-start:10px;background:var(--ok);color:#fff;
+  font-size:11px;font-weight:800;padding:4px 9px;border-radius:7px}
+.c .badge.a{background:var(--acc);color:#3a2800}
+.c .badge.no{background:var(--err)}
+.c .units{position:absolute;bottom:10px;inset-inline-end:10px;background:rgba(15,26,24,.82);color:#fff;
+  font-size:11px;font-weight:700;padding:4px 9px;border-radius:7px}
+.c .bd{padding:14px 15px;flex:1;display:flex;flex-direction:column}
+.c h3{font-size:18px}
+.c .sub{color:var(--mut);font-size:12.5px;font-weight:600;margin-top:3px}
+.specs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:12px 0}
+.specs div{background:#f3f7f6;border-radius:9px;padding:7px 3px;text-align:center;font-size:10.5px;
+  color:var(--mut);font-weight:700}
+.specs b{display:block;font-size:13px;color:var(--ink)}
+.c .pr{border-top:1px dashed var(--line);padding-top:12px;margin-top:auto;display:flex;align-items:center;gap:10px}
+.c .pr .n{font-size:23px;font-weight:900;color:var(--p);letter-spacing:-.8px}
+.c .pr small{color:var(--mut);font-size:11.5px;display:block;font-weight:600}
+
+/* ===== تفاصيل السيارة ===== */
+.det{display:grid;grid-template-columns:1.35fr .65fr;gap:24px;align-items:start}
+.gal .main{height:380px;border-radius:18px;overflow:hidden;background:#e9efed;border:1px solid var(--line)}
+.gal .main img{width:100%;height:100%;object-fit:cover}
+.gal .thumbs{display:flex;gap:9px;margin-top:10px;flex-wrap:wrap}
+.gal .thumbs div{width:92px;height:64px;border-radius:10px;overflow:hidden;cursor:pointer;
+  border:2px solid transparent;background:#e9efed}
+.gal .thumbs div.on{border-color:var(--p)}
+.gal .thumbs img{width:100%;height:100%;object-fit:cover}
+.box{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:18px;margin-bottom:16px}
+.box h4{font-size:16px;margin-bottom:12px}
+.kv{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f0f4f3;font-size:13.5px}
+.kv:last-child{border:0}
+.kv span{color:var(--mut);font-weight:600}
+.kv b{font-weight:800}
+.kv.tot{border-top:2px solid var(--line);margin-top:6px;padding-top:11px;font-size:16px}
+.kv.tot b{color:var(--p);font-size:19px}
+.chips{display:flex;gap:7px;flex-wrap:wrap}
+.chip{background:#f2f7f5;border:1px solid var(--line);border-radius:9px;padding:5px 10px;
+  font-size:12.5px;color:#39504b;font-weight:700}
+.rev{border-bottom:1px solid #f0f4f3;padding:11px 0}
+.rev:last-child{border:0}
+.rev .who{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:800}
+.rev p{color:var(--mut);font-size:13.5px;margin:6px 0 0;line-height:1.75;font-weight:600}
+.stars{color:var(--acc);letter-spacing:1px}
+
+/* ===== خطوات الحجز ===== */
+.steps{display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap}
+.stp{flex:1;min-width:120px;background:#fff;border:1px solid var(--line);border-radius:12px;
+  padding:11px 13px;font-size:13px;font-weight:800;color:var(--mut);display:flex;align-items:center;gap:8px}
+.stp i{width:24px;height:24px;border-radius:50%;background:#eef3f1;display:grid;place-items:center;
+  font-style:normal;font-size:12px;color:var(--mut);flex:none}
+.stp.on{border-color:var(--p);color:var(--p)}
+.stp.on i{background:var(--p);color:#fff}
+.stp.done i{background:var(--ok);color:#fff}
+.stp.done{color:var(--ok)}
+.wiz{display:grid;grid-template-columns:1.4fr .6fr;gap:22px;align-items:start}
+.form2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form2 .f{display:flex;flex-direction:column}
+.form2 .full{grid-column:1/-1}
+.exrow{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:12px;
+  padding:12px 14px;margin-bottom:9px;background:#fff;cursor:pointer}
+.exrow.on{border-color:var(--p);background:var(--p-l)}
+.exrow .ic{width:38px;height:38px;border-radius:11px;background:#f2f7f5;display:grid;place-items:center;font-size:19px;flex:none}
+.exrow b{display:block;font-size:14.5px}
+.exrow small{color:var(--mut);font-size:12px;font-weight:600}
+.exrow .px{font-weight:900;color:var(--p)}
+.qty{display:flex;align-items:center;gap:7px}
+.qty button{width:26px;height:26px;border-radius:7px;border:1px solid var(--line);background:#fff;cursor:pointer;font-weight:900}
+
+/* ===== حساب العميل ===== */
+.bk{background:#fff;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-bottom:14px}
+.bk .hd{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.bk .im{width:96px;height:66px;border-radius:10px;overflow:hidden;background:#e9efed;flex:none}
+.bk .im img{width:100%;height:100%;object-fit:cover}
+.bk .bd{padding:14px 16px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;font-size:13px}
+.bk .bd div span{display:block;color:var(--mut);font-size:11.5px;font-weight:700;margin-bottom:2px}
+.bk .ft{padding:12px 16px;border-top:1px solid var(--line);display:flex;gap:9px;flex-wrap:wrap;background:#fbfdfc}
 
 /* ===== لوحة التحكم ===== */
-#admin{min-height:100vh;background:#eef2f1}
-.abar{background:var(--p-d);color:#fff;height:62px;display:flex;align-items:center;gap:16px;padding:0 18px}
-.abar .sp{flex:1}
-.abar b{font-size:18px}
-.abar .who{font-size:13px;color:#bcd8d3}
-.alayout{display:grid;grid-template-columns:230px 1fr;gap:18px;padding:18px;align-items:start}
-.aside{background:#fff;border:1px solid var(--line);border-radius:14px;padding:8px;position:sticky;top:18px}
-.aside a{display:block;padding:10px 12px;border-radius:9px;font-weight:700;color:#41534f;cursor:pointer;font-size:14px}
-.aside a:hover{background:#f2f7f5}
-.aside a.on{background:var(--p);color:#fff}
-.amain{min-width:0}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:18px}
-.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px}
-.card b{display:block;font-size:26px;font-weight:900;color:var(--p);letter-spacing:-1px}
-.card small{color:var(--mut);font-weight:700;font-size:12.5px}
-.panel{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}
-.ptool{display:flex;gap:10px;align-items:center;padding:14px;border-bottom:1px solid var(--line);flex-wrap:wrap}
-.ptool .sp{flex:1}
-.ptool input[type=search]{border:1px solid var(--line);border-radius:10px;padding:9px 12px;
-      font-family:inherit;font-size:14px;min-width:200px;outline:none}
-.ptool input[type=search]:focus{border-color:var(--p)}
-.tblwrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:13.5px;white-space:nowrap}
-th{background:#f4f8f7;text-align:start;padding:11px 14px;font-weight:800;color:#41534f;
-   border-bottom:1px solid var(--line);position:sticky;top:0}
-td{padding:11px 14px;border-bottom:1px solid #eef3f1}
+.abar{background:var(--p-d);color:#fff;height:60px;display:flex;align-items:center;gap:14px;padding:0 18px}
+.abar b{font-size:17px}
+.abar .who{font-size:12.5px;color:#bcd8d3}
+.alayout{display:grid;grid-template-columns:215px 1fr;gap:16px;padding:16px;align-items:start}
+.aside{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:7px;position:sticky;top:16px}
+.aside a{display:block;padding:9px 11px;border-radius:9px;font-weight:700;color:#41534f;cursor:pointer;font-size:13.5px}
+.aside a:hover{background:#f2f7f5}.aside a.on{background:var(--p);color:#fff}
+.aside hr{border:0;border-top:1px solid var(--line);margin:7px 4px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:11px;margin-bottom:16px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px}
+.kpi b{display:block;font-size:24px;font-weight:900;color:var(--p);letter-spacing:-1px}
+.kpi small{color:var(--mut);font-weight:700;font-size:12px}
+.kpi.warn b{color:var(--warn)}
+.ptool{display:flex;gap:9px;align-items:center;padding:13px 14px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.ptool input[type=search]{min-width:190px;width:auto}
+.tblwrap{overflow-x:auto;max-height:70vh}
+table{width:100%;border-collapse:collapse;font-size:13px;white-space:nowrap}
+th{background:#f4f8f7;text-align:start;padding:10px 13px;font-weight:800;color:#41534f;
+  border-bottom:1px solid var(--line);position:sticky;top:0;z-index:2}
+td{padding:9px 13px;border-bottom:1px solid #eef3f1}
 tr:hover td{background:#fafcfb}
-.tag{display:inline-block;padding:3px 9px;border-radius:7px;font-size:11.5px;font-weight:800;
-     background:#eef3f1;color:#41534f}
-.tag.ok{background:#e3f6ee;color:#0b6e4d}
-.tag.no{background:#fdeaea;color:#a33}
-.tag.w{background:#fdf2e0;color:#8a5f00}
-.mask{position:fixed;inset:0;background:rgba(10,30,26,.55);z-index:900;display:grid;place-items:center;padding:18px}
-.modal{background:#fff;border-radius:18px;width:min(760px,100%);max-height:88vh;display:flex;flex-direction:column}
-.mhead{padding:18px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px}
-.mhead h3{margin:0;font-size:19px}.mhead .sp{flex:1}
-.mbody{padding:18px 20px;overflow:auto}
-.mfoot{padding:14px 20px;border-top:1px solid var(--line);display:flex;gap:10px;align-items:center}
-.mfoot .sp{flex:1}
-.form{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.form .f{display:flex;flex-direction:column;gap:5px}
-.form .f.full{grid-column:1/-1}
-.form label{font-size:12.5px;font-weight:800;color:#41534f}
-.form input,.form select,.form textarea{border:1px solid var(--line);border-radius:10px;padding:10px 12px;
-      font-family:inherit;font-size:14px;outline:none;background:#fbfdfc;width:100%}
-.form input:focus,.form select:focus,.form textarea:focus{border-color:var(--p);background:#fff}
-.form textarea{min-height:72px;resize:vertical}
-.form .chk{flex-direction:row;align-items:center;gap:9px}
-.form .chk input{width:18px;height:18px;accent-color:var(--p)}
-.form small{color:var(--mut);font-size:11.5px}
-.login{min-height:100vh;display:grid;place-items:center;padding:20px;
-       background:linear-gradient(160deg,#0e5f55,#072e29)}
-.lbox{background:#fff;border-radius:20px;padding:30px;width:min(420px,100%);
-      box-shadow:0 30px 70px -40px #000}
-.lbox h2{margin:0 0 6px;font-size:24px}
-.lbox p{color:var(--mut);margin:0 0 20px;font-size:14px}
-.lbox .f{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
-.lbox label{font-size:12.5px;font-weight:800;color:#41534f}
-.lbox input{border:1px solid var(--line);border-radius:10px;padding:11px 13px;font-family:inherit;
-            font-size:15px;outline:none}
-.lbox input:focus{border-color:var(--p)}
-.msg{border-radius:10px;padding:11px 14px;font-size:13.5px;font-weight:700;margin-bottom:14px}
-.msg.err{background:#fdeaea;color:#a33}
-.msg.ok{background:#e3f6ee;color:#0b6e4d}
-.msg.info{background:#fff8e6;color:#6b5312}
+.mask{position:fixed;inset:0;background:rgba(10,30,26,.55);z-index:900;display:grid;place-items:center;padding:16px;overflow:auto}
+.modal{background:#fff;border-radius:18px;width:min(860px,100%);max-height:90vh;display:flex;flex-direction:column}
+.mhead{padding:16px 19px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px}
+.mhead h3{font-size:18px}
+.mbody{padding:18px 19px;overflow:auto}
+.mfoot{padding:13px 19px;border-top:1px solid var(--line);display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.login{min-height:100vh;display:grid;place-items:center;padding:20px;background:linear-gradient(160deg,#0e5f55,#06211e)}
+.lbox{background:#fff;border-radius:20px;padding:28px;width:min(430px,100%);box-shadow:0 30px 70px -40px #000}
+.lbox h2{font-size:23px;margin-bottom:5px}
+.lbox p{color:var(--mut);margin:0 0 18px;font-size:13.5px}
+.lbox .f{margin-bottom:13px}
+.photos{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.ph{aspect-ratio:4/3;border:2px dashed var(--line);border-radius:11px;display:grid;place-items:center;
+  color:var(--mut);font-size:12px;font-weight:700;cursor:pointer;text-align:center;padding:6px;background:#fbfdfc}
+.ph.on{border-style:solid;border-color:var(--ok);background:#e9f8f2;color:#0b6e4d}
+.sig{border:1px solid var(--line);border-radius:11px;background:#fff;touch-action:none;width:100%;height:150px}
 
-@media(max-width:980px){
- .hero-in,.two,.band{grid-template-columns:1fr}
- .sgrid{grid-template-columns:1fr 1fr}.cats{grid-template-columns:repeat(3,1fr)}
- .row{grid-template-columns:1fr}
- .row .mid,.row .right{border-inline-start:0;border-top:1px solid var(--line)}
- .why,.steps,.fg4,.quotes{grid-template-columns:1fr 1fr}
- .hero h1{font-size:31px}.nav nav{display:none}.sh h2{font-size:24px}
- .alayout{grid-template-columns:1fr}.aside{position:static;display:flex;gap:6px;overflow-x:auto}
- .aside a{white-space:nowrap}
+footer{background:var(--ink);color:#9aaba7;padding:42px 0 28px;font-size:14px;margin-top:10px}
+.fg4{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:24px}
+.fg4 h4{color:#fff;margin-bottom:11px;font-size:15px}
+.fg4 a,.fg4 p{display:block;padding:4px 0;margin:0}
+.fbot{border-top:1px solid #253330;margin-top:24px;padding-top:16px;display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px}
+
+@media(max-width:1060px){
+ .cats{grid-template-columns:repeat(3,1fr)}
+ .cards{grid-template-columns:repeat(2,1fr)}
+ .results{grid-template-columns:1fr}.panel{position:static}
+ .det,.wiz{grid-template-columns:1fr}
+ .hero-in{grid-template-columns:1fr}
+ .sgrid{grid-template-columns:1fr 1fr}
+ .alayout{grid-template-columns:1fr}
+ .aside{position:static;display:flex;gap:5px;overflow-x:auto}
+ .aside a{white-space:nowrap}.aside hr{display:none}
+ .bk .bd{grid-template-columns:repeat(2,1fr)}
 }
-@media(max-width:620px){.why,.steps,.fg4,.sgrid,.quotes,.form{grid-template-columns:1fr}}
+@media(max-width:640px){
+ .hero h1{font-size:30px}.nav nav{display:none}.sh h2{font-size:22px}
+ .cards,.cats,.form2,.sgrid,.fg4{grid-template-columns:1fr}
+ .specs{grid-template-columns:repeat(2,1fr)}
+ .gal .main{height:240px}
+}
 </style>
 </head>
 <body>
 
-<!-- =================== الموقع =================== -->
+<!-- ======================= الموقع ======================= -->
 <div id="site">
 
 <div class="top"><div class="wrap">
-  <span>📞 <b id="t-phone">—</b></span><span>✉ <span id="t-email">—</span></span>
-  <div class="sp"></div><a href="#admin">لوحة التحكم</a><a id="t-branches">— فرع</a>
+  <span>📞 <b id="t-phone">—</b></span>
+  <span id="t-cities">—</span>
+  <div class="sp"></div>
+  <a href="#/account">حجوزاتي</a>
+  <a href="#/admin">لوحة التحكم</a>
 </div></div>
 
 <header><div class="wrap nav">
-  <div class="logo">
+  <div class="logo" onclick="go('#/')">
     <span class="mark"><svg viewBox="0 0 32 32" fill="none">
-      <path d="M4 23c6-2 7-11 13-13s11 1 11 1" stroke="#fff" stroke-opacity=".55" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="4 4"/>
+      <path d="M4 23c6-2 7-11 13-13s11 1 11 1" stroke="#fff" stroke-opacity=".5" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="4 4"/>
       <path d="M7 24c-2 0-3-1-3-2.5 0-2 1.6-3 3.6-3.4l5.4-1 4.4-3.6c1.1-.9 2.3-1.3 3.7-1.3h5.6c1.8 0 3.3.6 4.4 1.9l.9 1" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>
       <circle cx="11" cy="24" r="2.6" fill="#f0a500"/><circle cx="23" cy="24" r="2.6" fill="#f0a500"/>
     </svg></span>
     <span class="lw"><b id="t-name">دربك</b><small>DARBAK</small></span>
   </div>
-  <nav><a href="#">الرئيسية</a><a href="#results">السيارات</a><a href="#offers">العروض</a>
-       <a href="#branches">الفروع</a><a href="#faq">الأسئلة الشائعة</a></nav>
+  <nav>
+    <a href="#/" class="on">الرئيسية</a><a href="#/cars">السيارات</a>
+    <a href="#/offers">العروض</a><a href="#/branches">الفروع</a><a href="#/faq">الأسئلة</a>
+  </nav>
   <div class="sp"></div>
-  <button class="btn btn-g" onclick="soon('تسجيل دخول العملاء')">تسجيل الدخول</button>
-  <button class="btn btn-p" onclick="soon('إنشاء حساب')">حساب جديد</button>
+  <span id="nav-auth"></span>
 </div></header>
 
-<div class="hero"><div class="wrap">
-  <div class="hero-in">
-    <div>
-      <span class="kick">⚡ تأكيد الحجز خلال دقائق</span>
-      <h1>دربك يبدأ من هنا —<br><mark>احجز سيارتك</mark> واستلمها فورًا</h1>
-      <p class="lead">أسعار يومية وأسبوعية وشهرية واضحة، تأمين شامل اختياري، وتوصيل السيارة إلى موقعك أو من أقرب فرع.</p>
-      <div class="trust"><span>بدون رسوم مخفية</span><span id="t-cancel">إلغاء مجاني قبل ٢٤ ساعة</span>
-        <span>الدفع عند الاستلام</span><span>دعم ٢٤/٧</span></div>
+<!-- ---------- الرئيسية ---------- -->
+<div id="v-home">
+  <div class="hero"><div class="wrap">
+    <div class="hero-in">
+      <div>
+        <span class="kick">⚡ تأكيد الحجز خلال دقائق</span>
+        <h1>دربك يبدأ من هنا —<br><mark>احجز سيارتك</mark> واستلمها فورًا</h1>
+        <p class="lead">أسعار واضحة شاملة الضريبة، خصم يزيد مع المدة، وتوصيل السيارة إلى موقعك أو من أقرب فرع.</p>
+        <div class="trust">
+          <span>بدون رسوم مخفية</span><span id="t-cancel">إلغاء مجاني</span>
+          <span>الدفع عند الاستلام</span><span>دعم ٢٤/٧</span>
+        </div>
+      </div>
+      <div class="heroimg" id="heroimg"></div>
     </div>
-    <div class="hvis">
-      <div class="fl a"><i>◉</i> متاح الآن <b id="t-avail">—</b></div>
-      <div class="fl b"><b id="t-from">—</b>يبدأ من / يوم</div>
-      <svg class="car" viewBox="0 0 520 190">
-        <ellipse cx="260" cy="162" rx="196" ry="12" fill="#000" opacity=".3"/>
-        <path d="M66 140c-14 0-22-8-22-19 0-14 10-22 26-25l44-8 38-30c9-7 19-10 31-10h84c15 0 27 5 37 16l27 26 52 9c20 4 30 12 30 24 0 11-8 17-22 17H66z" fill="#17a08f"/>
-        <path d="M172 54h72v36h-100l28-36z" fill="#062522" opacity=".85"/>
-        <path d="M258 54h60c8 0 15 2 20 8l21 28H258V54z" fill="#062522" opacity=".85"/>
-        <rect x="430" y="104" width="42" height="11" rx="5.5" fill="#f0a500"/>
-        <circle cx="152" cy="140" r="27" fill="#062522"/><circle cx="152" cy="140" r="10" fill="#f0a500"/>
-        <circle cx="384" cy="140" r="27" fill="#062522"/><circle cx="384" cy="140" r="10" fill="#f0a500"/>
-      </svg>
-    </div>
-  </div>
 
-  <div class="sbox">
-    <div class="tabs">
-      <div class="tab on" data-mode="daily">إيجار يومي</div>
-      <div class="tab" data-mode="monthly">إيجار شهري</div>
-      <div class="tab" data-mode="driver">مع سائق</div>
+    <div class="sbox">
+      <div class="tabs" id="s-tabs">
+        <div class="tab on" data-mode="daily">إيجار يومي</div>
+        <div class="tab" data-mode="weekly">أسبوعي</div>
+        <div class="tab" data-mode="monthly">شهري</div>
+        <div class="tab" data-mode="driver">مع سائق</div>
+      </div>
+      <div class="sgrid">
+        <div class="fld"><span class="lbl">مكان الاستلام</span>
+          <select id="f-pb"><option value="">كل الفروع</option></select></div>
+        <div class="fld"><span class="lbl">مكان التسليم</span>
+          <select id="f-db"><option value="">نفس مكان الاستلام</option></select></div>
+        <div class="fld"><span class="lbl">تاريخ ووقت الاستلام</span>
+          <input type="datetime-local" id="f-from"></div>
+        <div class="fld"><span class="lbl">تاريخ ووقت التسليم</span>
+          <input type="datetime-local" id="f-to"></div>
+        <button class="btn btn-p btn-lg" id="f-go">ابحث</button>
+      </div>
+      <div class="srow">
+        <label><input type="checkbox" id="f-same" checked> التسليم في نفس المكان</label>
+        <label><input type="checkbox" id="f-deliv"> أحتاج توصيل لموقعي</label>
+        <div class="sp"></div>
+        <span id="f-days" style="font-weight:800;color:var(--p)"></span>
+      </div>
     </div>
-    <div class="sgrid">
-      <div class="fld"><label>مكان الاستلام</label><select id="f-pickup-branch"><option value="">كل الفروع</option></select></div>
-      <div class="fld"><label>مكان التسليم</label><select id="f-dropoff-branch"><option value="">نفس مكان الاستلام</option></select></div>
-      <div class="fld"><label>تاريخ ووقت الاستلام</label><input type="datetime-local" id="f-pickup-at"></div>
-      <div class="fld"><label>تاريخ ووقت التسليم</label><input type="datetime-local" id="f-dropoff-at"></div>
-      <button class="btn btn-p" style="padding:0 28px;font-size:16px" id="f-search">ابحث عن سيارة</button>
+  </div></div>
+
+  <section style="padding-top:68px"><div class="wrap">
+    <div class="sh"><div><h2>تصنيفات السيارات</h2><p>السعر يشمل التأمين الأساسي وحد الكيلومترات</p></div>
+      <div class="sp"></div><a onclick="pickCat('')">كل السيارات ←</a></div>
+    <div class="cats" id="cats"></div>
+  </div></section>
+
+  <section style="padding-top:0" id="results"><div class="wrap">
+    <div class="sh"><div><h2 id="r-h2">السيارات المتاحة</h2><p id="r-sub">—</p></div>
+      <div class="sp"></div><span id="r-cnt" style="color:var(--mut);font-size:13.5px;font-weight:700"></span></div>
+    <div class="results">
+      <aside class="panel" id="filters"></aside>
+      <div>
+        <div class="sortbar">
+          <span style="color:var(--mut);font-weight:700">ترتيب:</span>
+          <span class="pill on" data-sort="price_asc">الأقل سعرًا</span>
+          <span class="pill" data-sort="price_desc">الأعلى سعرًا</span>
+          <span class="pill" data-sort="rating_desc">الأعلى تقييمًا</span>
+          <span class="pill" data-sort="popular">الأكثر طلبًا</span>
+          <span class="pill" data-sort="newest">الأحدث</span>
+          <div class="sp"></div>
+          <span id="r-vat" style="color:var(--mut);font-size:12.5px;font-weight:700"></span>
+        </div>
+        <div id="r-list"></div>
+      </div>
     </div>
-    <div class="srow">
-      <label><input type="checkbox" id="f-same" checked> التسليم في نفس مكان الاستلام</label>
-      <label><input type="checkbox" id="f-delivery"> أحتاج توصيل للموقع</label>
-      <label><input type="checkbox" id="f-insurance"> تأمين شامل فقط</label>
-      <span id="f-days" style="margin-inline-start:auto;font-weight:800;color:var(--p)"></span>
-    </div>
+  </div></section>
+
+  <section style="padding-top:0" id="offers"><div class="wrap" id="offers-box"></div></section>
+
+  <section style="padding-top:36px"><div class="wrap">
+    <div class="sh"><div><h2>كلما طالت المدة قلّ السعر</h2><p>الخصم يُطبَّق تلقائيًا بدون كود</p></div></div>
+    <div class="cats" id="tiers" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr))"></div>
+  </div></section>
+
+  <section style="padding-top:0"><div class="wrap">
+    <div class="sh"><div><h2>كيف تحجز من دربك؟</h2></div></div>
+    <div class="cats" style="grid-template-columns:repeat(5,1fr)" id="howto"></div>
+  </div></section>
+
+  <section style="padding-top:0" id="faq"><div class="wrap"
+    style="display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start" class="wrap two">
+    <div><div class="sh"><div><h2>الأسئلة الشائعة</h2></div></div><div id="faq-box"></div></div>
+    <div id="branches"><div class="sh"><div><h2>فروعنا</h2></div></div><div id="br-box"></div></div>
+  </div></section>
+
+  <section style="padding-top:0"><div class="wrap">
+    <div class="sh"><div><h2>آراء عملائنا</h2></div></div>
+    <div class="cards" id="quotes" style="grid-template-columns:repeat(4,1fr)"></div>
+  </div></section>
+</div>
+
+<!-- ---------- تفاصيل السيارة ---------- -->
+<div id="v-car" hidden><div class="wrap" style="padding:28px 20px">
+  <a onclick="history.back()" style="color:var(--p);font-weight:800;cursor:pointer">← رجوع للنتائج</a>
+  <div id="car-box" style="margin-top:16px"></div>
+</div></div>
+
+<!-- ---------- خطوات الحجز ---------- -->
+<div id="v-book" hidden><div class="wrap" style="padding:28px 20px">
+  <div class="steps" id="bk-steps"></div>
+  <div class="wiz">
+    <div id="bk-main"></div>
+    <div id="bk-side"></div>
   </div>
 </div></div>
 
-<section style="padding-top:72px"><div class="wrap">
-  <div class="sh"><div><h2>تصنيفات السيارات</h2><p>اختر الفئة المناسبة لرحلتك</p></div>
-    <div class="sp"></div><a onclick="clearCategory()">كل السيارات ←</a></div>
-  <div class="cats" id="cats"></div>
-</div></section>
-
-<section style="padding-top:0" id="results"><div class="wrap">
-  <div class="sh"><div><h2>السيارات المتاحة</h2><p id="r-sub">—</p></div>
-    <div class="sp"></div><span id="r-count" style="color:var(--mut);font-size:13.5px;font-weight:700"></span></div>
-  <div class="sortbar">
-    <span style="color:var(--mut);font-weight:700">ترتيب حسب:</span>
-    <span class="pill on" data-sort="price_asc">الأقل سعرًا</span>
-    <span class="pill" data-sort="price_desc">الأعلى سعرًا</span>
-    <span class="pill" data-sort="rating_desc">الأعلى تقييمًا</span>
-    <span class="pill" data-sort="popular">الأكثر طلبًا</span>
-    <span class="pill" data-sort="newest">الأحدث</span>
-    <div class="sp"></div><span id="r-info" style="color:var(--mut);font-size:13px;font-weight:700"></span>
-  </div>
-  <div id="r-list"><div class="skel" style="height:176px"></div></div>
-</div></section>
-
-<section style="padding-top:0" id="offers"><div class="wrap" id="offers-box"></div></section>
-
-<section style="padding-top:56px"><div class="wrap">
-  <div class="sh"><div><h2>لماذا دربك؟</h2></div></div>
-  <div class="why">
-    <div class="w"><div class="ic">🛡️</div><h4>تأمين واضح</h4><p>مبلغ التأمين معروف قبل الحجز ويُسترد بعد فحص السيارة في نفس اليوم.</p></div>
-    <div class="w"><div class="ic">🚚</div><h4>توصيل للموقع</h4><p>نسلّم السيارة في المطار أو الفندق أو موقعك برسوم محددة حسب المنطقة.</p></div>
-    <div class="w"><div class="ic">📄</div><h4>عقد وفاتورة إلكترونية</h4><p>عقد PDF وتوثيق بالصور لحالة السيارة قبل وبعد الإيجار.</p></div>
-    <div class="w"><div class="ic">⏱️</div><h4>تمديد بضغطة</h4><p>اطلب تمديد الإيجار من حسابك وادفع الفرق إلكترونيًا.</p></div>
-  </div>
-</div></section>
-
-<section style="padding-top:0"><div class="wrap">
-  <div class="sh"><div><h2>خطوات الحجز</h2></div></div>
-  <div class="steps">
-    <div class="step"><b>١</b><h4>بيانات الرحلة</h4><p>مكان وتاريخ الاستلام والتسليم.</p></div>
-    <div class="step"><b>٢</b><h4>اختيار السيارة</h4><p>فلترة بالسعر والفئة والمواصفات.</p></div>
-    <div class="step"><b>٣</b><h4>الإضافات</h4><p>سائق إضافي، GPS، مقعد أطفال، تأمين شامل.</p></div>
-    <div class="step"><b>٤</b><h4>المستندات</h4><p>الهوية أو الإقامة ورخصة القيادة.</p></div>
-    <div class="step"><b>٥</b><h4>الدفع والاستلام</h4><p>مدى أو بطاقة أو عند الاستلام.</p></div>
-  </div>
-</div></section>
-
-<section style="padding-top:0" id="quotes-sec"><div class="wrap">
-  <div class="sh"><div><h2>آراء العملاء</h2></div></div>
-  <div class="quotes" id="quotes"></div>
-</div></section>
-
-<section style="padding-top:0"><div class="wrap two">
-  <div id="faq"><div class="sh"><div><h2>الأسئلة الشائعة</h2></div></div><div id="faq-box"></div></div>
-  <div id="branches"><div class="sh"><div><h2>فروعنا</h2></div></div><div id="branches-box"></div></div>
-</div></section>
+<!-- ---------- حساب العميل ---------- -->
+<div id="v-account" hidden><div class="wrap" style="padding:28px 20px">
+  <div id="acc-box"></div>
+</div></div>
 
 <footer><div class="wrap">
   <div class="fg4">
     <div>
-      <div class="logo" style="margin-bottom:12px">
+      <div class="logo" style="margin-bottom:11px">
         <span class="mark"><svg viewBox="0 0 32 32" fill="none">
           <path d="M7 24c-2 0-3-1-3-2.5 0-2 1.6-3 3.6-3.4l5.4-1 4.4-3.6c1.1-.9 2.3-1.3 3.7-1.3h5.6c1.8 0 3.3.6 4.4 1.9l.9 1" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>
           <circle cx="11" cy="24" r="2.6" fill="#f0a500"/><circle cx="23" cy="24" r="2.6" fill="#f0a500"/></svg></span>
         <span class="lw" style="color:#fff"><b>دربك</b><small style="color:#7f918d">DARBAK</small></span>
       </div>
-      <p>تأجير سيارات لجميع الفئات مع توصيل داخل المدن الرئيسية ودعم على مدار الساعة.</p>
-      <p id="f-vat" style="font-size:12.5px"></p>
+      <p>تأجير سيارات في الرياض وجدة والدمام — أسطول حديث وأسعار شاملة الضريبة.</p>
+      <p id="f-vat" style="font-size:12px"></p>
     </div>
-    <div><h4>الشركة</h4><a>من نحن</a><a href="#results">السيارات</a><a href="#branches">الفروع</a><a href="#offers">العروض</a></div>
-    <div><h4>السياسات</h4><a>الشروط والأحكام</a><a>سياسة الخصوصية</a><a>سياسة الإلغاء والاسترداد</a><a>متطلبات الاستئجار</a></div>
-    <div><h4>تواصل معنا</h4><a id="f-phone">—</a><a id="f-email">—</a><a>واتساب</a><a href="#admin">دخول الموظفين</a></div>
+    <div><h4>الشركة</h4><a href="#/cars">السيارات</a><a href="#/branches">الفروع</a>
+      <a href="#/offers">العروض</a><a onclick="openPage('about')">من نحن</a></div>
+    <div><h4>السياسات</h4><a onclick="openPage('terms')">الشروط والأحكام</a>
+      <a onclick="openPage('privacy')">الخصوصية</a><a onclick="openPage('cancel')">الإلغاء والاسترداد</a>
+      <a onclick="openPage('requirements')">متطلبات الاستئجار</a><a onclick="openPage('insurance')">التأمين والأضرار</a></div>
+    <div><h4>تواصل</h4><a id="f-phone">—</a><a id="f-email">—</a>
+      <a href="#/account">حجوزاتي</a><a href="#/admin">دخول الموظفين</a></div>
   </div>
-  <div class="fbot"><span>© ٢٠٢٦ دربك Darbak — جميع الحقوق محفوظة.</span><div class="sp"></div>
-    <span>مدى · فيزا · ماستركارد · آبل باي · الدفع عند الاستلام</span></div>
+  <div class="fbot"><span id="f-cr">© دربك Darbak</span><div class="sp"></div>
+    <span>مدى · فيزا · ماستركارد · تحويل بنكي · الدفع عند الاستلام</span></div>
 </div></footer>
 </div><!-- /site -->
 
 
-<!-- =================== لوحة التحكم =================== -->
+<!-- ======================= لوحة التحكم ======================= -->
 <div id="admin" hidden>
-
   <div id="a-login" class="login">
     <div class="lbox">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
         <span class="mark"><svg viewBox="0 0 32 32" fill="none">
           <path d="M7 24c-2 0-3-1-3-2.5 0-2 1.6-3 3.6-3.4l5.4-1 4.4-3.6c1.1-.9 2.3-1.3 3.7-1.3h5.6c1.8 0 3.3.6 4.4 1.9l.9 1" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>
           <circle cx="11" cy="24" r="2.6" fill="#f0a500"/><circle cx="23" cy="24" r="2.6" fill="#f0a500"/></svg></span>
         <span class="lw"><b>دربك</b><small>DARBAK</small></span>
       </div>
-      <h2 id="l-title">تسجيل دخول الموظفين</h2>
-      <p id="l-sub">ادخل باسم الدخول وكلمة المرور.</p>
+      <h2 id="l-title">دخول الموظفين</h2>
+      <p id="l-sub">اسم الدخول وكلمة المرور.</p>
       <div id="l-msg"></div>
-      <div class="f" id="l-name-f" hidden><label>الاسم الكامل</label><input id="l-name" placeholder="مثال: أحمد العتيبي"></div>
-      <div class="f"><label>اسم الدخول</label><input id="l-code" autocomplete="username" placeholder="admin"></div>
-      <div class="f"><label>كلمة المرور</label><input id="l-pass" type="password" autocomplete="current-password"></div>
-      <button class="btn btn-p" id="l-btn" style="width:100%;margin-top:6px">دخول</button>
-      <div style="text-align:center;margin-top:14px"><a href="#" style="color:var(--mut);font-size:13px">← رجوع للموقع</a></div>
+      <div class="f" id="l-name-f" hidden><span class="lbl">الاسم الكامل</span><input id="l-name"></div>
+      <div class="f"><span class="lbl">اسم الدخول</span><input id="l-code" autocomplete="username" placeholder="admin"></div>
+      <div class="f"><span class="lbl">كلمة المرور</span><input id="l-pass" type="password" autocomplete="current-password"></div>
+      <button class="btn btn-p" id="l-btn" style="width:100%;margin-top:4px">دخول</button>
+      <div style="text-align:center;margin-top:13px"><a href="#/" style="color:var(--mut);font-size:13px">← رجوع للموقع</a></div>
     </div>
   </div>
 
   <div id="a-panel" hidden>
     <div class="abar">
-      <b>دربك — لوحة التحكم</b>
-      <span class="who" id="a-who"></span>
+      <b>دربك — لوحة التحكم</b><span class="who" id="a-who"></span>
       <div class="sp"></div>
-      <a href="#" class="btn btn-sm btn-g">الموقع</a>
-      <button class="btn btn-sm btn-g" id="a-logout">خروج</button>
+      <a href="#/" class="btn btn-sm btn-g">الموقع</a>
+      <button class="btn btn-sm btn-g" id="a-out">خروج</button>
     </div>
     <div class="alayout">
       <aside class="aside" id="a-menu"></aside>
-      <div class="amain">
-        <div class="cards" id="a-cards"></div>
-        <div class="panel">
-          <div class="ptool">
-            <b id="a-title" style="font-size:17px">—</b>
-            <span class="tag" id="a-count">0</span>
-            <div class="sp"></div>
-            <input type="search" id="a-q" placeholder="بحث…">
-            <button class="btn btn-sm btn-g" id="a-refresh">تحديث</button>
-            <button class="btn btn-sm btn-p" id="a-new">+ إضافة</button>
-          </div>
-          <div class="tblwrap"><table id="a-table"></table></div>
-          <div id="a-empty" class="empty" hidden style="border:0"></div>
-        </div>
+      <div style="min-width:0">
+        <div class="kpis" id="a-kpis"></div>
+        <div id="a-view"></div>
       </div>
     </div>
   </div>
+</div>
 
-  <div id="a-modal" class="mask" hidden>
-    <div class="modal">
-      <div class="mhead"><h3 id="m-title">—</h3><div class="sp"></div>
-        <button class="btn btn-sm btn-g" onclick="closeModal()">✕</button></div>
-      <div class="mbody"><div id="m-msg"></div><div class="form" id="m-form"></div></div>
-      <div class="mfoot">
-        <button class="btn btn-r btn-sm" id="m-del" hidden>حذف</button>
-        <div class="sp"></div>
-        <button class="btn btn-g" onclick="closeModal()">إلغاء</button>
-        <button class="btn btn-p" id="m-save">حفظ</button>
-      </div>
-    </div>
+<div id="modal" class="mask" hidden>
+  <div class="modal">
+    <div class="mhead"><h3 id="m-title">—</h3><div class="sp"></div>
+      <button class="btn btn-sm btn-g" onclick="closeModal()">✕</button></div>
+    <div class="mbody"><div id="m-msg"></div><div id="m-body"></div></div>
+    <div class="mfoot" id="m-foot"></div>
   </div>
-</div><!-- /admin -->
-
+</div>
 
 <script>
 /* ===========================================================
-   دربك — سكربت الموقع + لوحة التحكم
+   دربك — الواجهة
    =========================================================== */
-
-var API = { url: String(DARBAK.API_URL || ''), token: String(DARBAK.API_TOKEN || '') };
+var API = { url:String(DARBAK.API_URL||''), token:String(DARBAK.API_TOKEN||'') };
 var READY = /^https:\/\/script\.google\.com\/macros\/s\/.+\/exec$/.test(API.url) && API.token.indexOf('ضع') === -1;
 
-var HOME = null, CUR = 'ر.س', STATE = { sort:'price_asc', category_id:'', mode:'daily' };
-var SESSION = null, ME = null, SCHEMA = null, TAB = 'Cars', ROWS = [];
+var HOME=null, CUR='ر.س', VATP=15;
+var Q = { pb:'', db:'', from:'', to:'', cat:'', sort:'price_asc', mode:'daily', deliv:false, filters:{} };
+var CUSTOMER=null, CSESS=null;
+var ME=null, ESESS=null, SCH=null, TAB='Bookings', ROWS=[];
+var BK = null;   /* حالة خطوات الحجز */
 
 /* ---------- أدوات ---------- */
-function el(id){ return document.getElementById(id); }
-function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){
-  return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]; }); }
-function money(n){ return (Math.round(n)||0).toLocaleString('ar-SA') + ' ' + CUR; }
-function toast(msg, err){
-  var t=document.createElement('div'); t.className='toast'+(err?' err':''); t.textContent=msg;
-  document.body.appendChild(t); setTimeout(function(){ t.remove(); }, 3600);
-}
-function soon(w){ toast(w + ' — قيد التنفيذ'); }
+function el(i){ return document.getElementById(i); }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){
+  return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]; }); }
+function money(n,dec){ var v=num(n); return (dec?v.toFixed(2):Math.round(v)).toLocaleString('ar-SA')+' '+CUR; }
+function num(v){ var n=Number(v); return isNaN(n)?0:n; }
+function toast(m,e){ var t=document.createElement('div'); t.className='toast'+(e?' err':'');
+  t.textContent=m; document.body.appendChild(t); setTimeout(function(){t.remove();},3600); }
 function pad(n){ return (n<10?'0':'')+n; }
 function toLocal(d){ return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+'T'+pad(d.getHours())+':'+pad(d.getMinutes()); }
 function daysBetween(a,b){ var d=Math.ceil((new Date(b)-new Date(a))/86400000); return d<1?1:d; }
+function go(h){ location.hash=h; }
+function stars(n){ return '★'.repeat(Math.round(num(n))||5); }
+function ph(){ return 'data:image/svg+xml;utf8,'+encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200"><rect fill="#e3ebe9" width="300" height="200"/>'+
+  '<text x="150" y="105" text-anchor="middle" font-size="16" fill="#86999" font-family="sans-serif">صورة السيارة</text></svg>'); }
+function imgOf(a){ return (a && a.length) ? a[0] : ph(); }
 
-/* ---------- الاتصال بالـAPI ---------- */
-function qs(o){
-  var p=[]; Object.keys(o||{}).forEach(function(k){
-    var v=o[k]; if(v===''||v==null||v===false) return;
-    p.push(encodeURIComponent(k)+'='+encodeURIComponent(String(v)));
-  }); return p.join('&');
-}
-function apiGet(action, params){
+/* ---------- الاتصال ---------- */
+function qs(o){ var p=[]; Object.keys(o||{}).forEach(function(k){ var v=o[k];
+  if(v===''||v==null||v===false) return;
+  p.push(encodeURIComponent(k)+'='+encodeURIComponent(typeof v==='object'?JSON.stringify(v):String(v))); });
+  return p.join('&'); }
+
+function apiGet(action,params){
   if(!READY) return Promise.reject(new Error('الرابط أو التوكن غير مضبوط في أول الملف'));
-  var url = API.url + '?' + qs(Object.assign({action:action, token:API.token}, params||{}));
-  return fetch(url,{method:'GET',redirect:'follow'})
-    .then(function(r){ return r.json(); })
-    .catch(function(){ return jsonp(action, params); })
-    .then(unwrap);
+  var url=API.url+'?'+qs(Object.assign({action:action,token:API.token},params||{}));
+  return fetch(url,{method:'GET',redirect:'follow'}).then(function(r){return r.json();})
+    .catch(function(){ return jsonp(action,params); }).then(unwrap);
 }
-function jsonp(action, params){
-  return new Promise(function(res, rej){
+function jsonp(action,params){
+  return new Promise(function(res,rej){
     var n='cb_'+Date.now()+'_'+Math.floor(Math.random()*1e6), s=document.createElement('script'), done=false;
-    function clean(){ try{delete window[n];}catch(e){window[n]=undefined;} if(s.parentNode) s.parentNode.removeChild(s); }
+    function clean(){ try{delete window[n];}catch(e){window[n]=undefined;} if(s.parentNode)s.parentNode.removeChild(s); }
     window[n]=function(r){ done=true; clean(); res(r); };
-    s.src = API.url+'?'+qs(Object.assign({action:action, token:API.token, callback:n}, params||{}));
+    s.src=API.url+'?'+qs(Object.assign({action:action,token:API.token,callback:n},params||{}));
     s.onerror=function(){ clean(); rej(new Error('تعذر الاتصال بالخادم')); };
     document.head.appendChild(s);
-    setTimeout(function(){ if(!done){ clean(); rej(new Error('انتهت مهلة الانتظار')); } }, 25000);
+    setTimeout(function(){ if(!done){ clean(); rej(new Error('انتهت مهلة الانتظار')); } },25000);
   });
 }
-function apiPost(action, payload){
+function apiPost(action,payload){
   if(!READY) return Promise.reject(new Error('الرابط أو التوكن غير مضبوط في أول الملف'));
-  return fetch(API.url, {
-    method:'POST', redirect:'follow',
+  return fetch(API.url,{method:'POST',redirect:'follow',
     headers:{'Content-Type':'text/plain;charset=utf-8'},
-    body: JSON.stringify(Object.assign({action:action, token:API.token}, payload||{}))
-  }).then(function(r){ return r.json(); }).then(unwrap);
+    body:JSON.stringify(Object.assign({action:action,token:API.token},payload||{}))})
+    .then(function(r){return r.json();}).then(unwrap);
 }
-function unwrap(r){
-  if(!r) throw new Error('لا يوجد رد من الخادم');
-  if(r.ok) return r.data;
-  throw new Error(r.error || 'خطأ غير معروف');
+function unwrap(r){ if(!r) throw new Error('لا يوجد رد من الخادم');
+  if(r.ok) return r.data; throw new Error(r.error||'خطأ غير معروف'); }
+
+/* ---------- المودال ---------- */
+function openModal(title,body,foot){
+  el('m-title').textContent=title; el('m-body').innerHTML=body;
+  el('m-foot').innerHTML=foot||'<div class="sp"></div><button class="btn btn-g" onclick="closeModal()">إغلاق</button>';
+  el('m-msg').innerHTML=''; el('modal').hidden=false;
 }
+function closeModal(){ el('modal').hidden=true; }
+function mmsg(t,k){ el('m-msg').innerHTML=t?('<div class="msg '+(k||'err')+'">'+esc(t)+'</div>'):''; }
+el('modal').addEventListener('click',function(e){ if(e.target===el('modal')) closeModal(); });
+
+function openPage(slug){
+  apiGet('page',{slug:slug}).then(function(p){ openModal(p.title,p.content); })
+    .catch(function(e){ toast(e.message,true); });
+}
+</script>
+<script>
+/* ===========================================================
+   التوجيه
+   =========================================================== */
+var VIEWS = ['v-home','v-car','v-book','v-account'];
+function showView(id){
+  el('site').hidden = (id === 'admin');
+  el('admin').hidden = (id !== 'admin');
+  VIEWS.forEach(function(v){ el(v).hidden = (v !== id); });
+  if(id !== 'admin') window.scrollTo({top:0,behavior:'instant'});
+}
+
+function route(){
+  var h = location.hash || '#/';
+  closeModal();
+  if(h.indexOf('#/admin') === 0){ showView('admin'); adminEnter(); return; }
+  if(h.indexOf('#/car/') === 0){ showView('v-car'); loadCar(h.slice(6)); return; }
+  if(h.indexOf('#/book/') === 0){ showView('v-book'); startBooking(h.slice(7)); return; }
+  if(h.indexOf('#/account') === 0){ showView('v-account'); loadAccount(); return; }
+  showView('v-home');
+  if(h === '#/cars' || h === '#/offers' || h === '#/branches' || h === '#/faq'){
+    var t = { '#/cars':'results', '#/offers':'offers', '#/branches':'branches', '#/faq':'faq' }[h];
+    setTimeout(function(){ var n = el(t); if(n) n.scrollIntoView({behavior:'smooth',block:'start'}); }, 120);
+  }
+}
+window.addEventListener('hashchange', route);
 
 /* ===========================================================
-   الموقع
+   التحميل الأول
    =========================================================== */
+document.addEventListener('DOMContentLoaded', function(){
+  if(typeof Object.assign !== 'function'){
+    Object.assign = function(t){ for(var i=1;i<arguments.length;i++){ var s=arguments[i]||{};
+      for(var k in s) if(Object.prototype.hasOwnProperty.call(s,k)) t[k]=s[k]; } return t; };
+  }
+  CSESS = sessionStorage.getItem('darbak_c') || null;
+  ESESS = sessionStorage.getItem('darbak_e') || null;
 
-function initSite(){
   var a=new Date(); a.setDate(a.getDate()+1); a.setHours(10,0,0,0);
   var b=new Date(a); b.setDate(b.getDate()+4);
-  el('f-pickup-at').value=toLocal(a); el('f-dropoff-at').value=toLocal(b);
-  updateDays();
+  el('f-from').value = toLocal(a); el('f-to').value = toLocal(b);
+  Q.from = el('f-from').value; Q.to = el('f-to').value;
+  updDays();
 
-  el('f-pickup-at').addEventListener('change', updateDays);
-  el('f-dropoff-at').addEventListener('change', updateDays);
-  el('f-search').addEventListener('click', function(){ doSearch(true); });
+  el('f-from').addEventListener('change', function(){ Q.from=this.value; updDays(); });
+  el('f-to').addEventListener('change', function(){ Q.to=this.value; updDays(); });
+  el('f-pb').addEventListener('change', function(){ Q.pb=this.value; if(el('f-same').checked) Q.db=this.value; });
+  el('f-db').addEventListener('change', function(){ Q.db=this.value; });
   el('f-same').addEventListener('change', function(){
-    el('f-dropoff-branch').disabled=this.checked;
-    if(this.checked) el('f-dropoff-branch').value='';
+    el('f-db').disabled=this.checked; if(this.checked){ el('f-db').value=''; Q.db=Q.pb; }
   });
-  el('f-dropoff-branch').disabled=true;
+  el('f-db').disabled = true;
+  el('f-deliv').addEventListener('change', function(){ Q.deliv=this.checked; });
+  el('f-go').addEventListener('click', function(){ search(true); });
 
-  document.querySelectorAll('.tabs .tab').forEach(function(t){
+  document.querySelectorAll('#s-tabs .tab').forEach(function(t){
     t.addEventListener('click', function(){
-      document.querySelectorAll('.tabs .tab').forEach(function(x){ x.classList.remove('on'); });
-      t.classList.add('on'); STATE.mode=t.dataset.mode;
-      if(STATE.mode==='monthly'){
-        var s=new Date(el('f-pickup-at').value||new Date()), e=new Date(s);
-        e.setDate(e.getDate()+30); el('f-dropoff-at').value=toLocal(e); updateDays();
+      document.querySelectorAll('#s-tabs .tab').forEach(function(x){ x.classList.remove('on'); });
+      t.classList.add('on'); Q.mode = t.dataset.mode;
+      var add = { daily:0, weekly:7, monthly:30, driver:0 }[Q.mode];
+      if(add){
+        var s=new Date(el('f-from').value||new Date()), e=new Date(s);
+        e.setDate(e.getDate()+add); el('f-to').value=toLocal(e); Q.to=el('f-to').value; updDays();
       }
-      doSearch();
+      search();
     });
   });
   document.querySelectorAll('.sortbar .pill').forEach(function(p){
     p.addEventListener('click', function(){
       document.querySelectorAll('.sortbar .pill').forEach(function(x){ x.classList.remove('on'); });
-      p.classList.add('on'); STATE.sort=p.dataset.sort; doSearch();
+      p.classList.add('on'); Q.sort=p.dataset.sort; search();
     });
   });
 
+  adminBind();
+  paintAuth();
+
   if(!READY){
     el('r-list').innerHTML='<div class="empty"><b>الموقع غير مربوط بعد</b>'+
-      'افتح ملف index.html وحط رابط الـWeb App والتوكن في أول الملف.</div>';
-    return;
+      'افتح ملف index.html وحط رابط الـWeb App والتوكن في أول الملف (سطر ١٣ و ١٤).</div>';
+    route(); return;
   }
   apiGet('home').then(function(d){
-    HOME=d; CUR=(d.settings.currency)||'ر.س'; paintHome(d); doSearch();
+    HOME=d; CUR=d.settings.currency||'ر.س'; VATP=num(d.settings.tax_percent)||15;
+    paintHome(d); route(); search();
   }).catch(function(e){
     el('r-list').innerHTML='<div class="empty"><b>تعذر الاتصال بقاعدة البيانات</b>'+esc(e.message)+'</div>';
-    toast(e.message, true);
+    route(); toast(e.message,true);
   });
-}
+});
 
-function updateDays(){
-  var a=el('f-pickup-at').value, b=el('f-dropoff-at').value;
+function updDays(){
+  var a=el('f-from').value, b=el('f-to').value;
   if(!a||!b) return;
-  if(new Date(b)<=new Date(a)){ var f=new Date(a); f.setDate(f.getDate()+1); el('f-dropoff-at').value=toLocal(f); b=el('f-dropoff-at').value; }
-  el('f-days').textContent='مدة الإيجار: '+daysBetween(a,b)+' يوم';
+  if(new Date(b)<=new Date(a)){ var f=new Date(a); f.setDate(f.getDate()+1);
+    el('f-to').value=toLocal(f); b=el('f-to').value; }
+  Q.from=a; Q.to=b;
+  var d=daysBetween(a,b);
+  var tier=(HOME&&HOME.tiers||[]).filter(function(t){
+    return d>=t.min_days && (!t.max_days || d<=t.max_days); })[0];
+  el('f-days').textContent='المدة '+d+' يوم'+(tier?(' · خصم '+tier.percent+'٪'):'');
 }
 
+function paintAuth(){
+  el('nav-auth').innerHTML = CSESS
+    ? '<a href="#/account" class="btn btn-sm btn-g">حسابي</a>'
+    : '<button class="btn btn-sm btn-g" onclick="authModal(\'login\')">دخول</button>'+
+      ' <button class="btn btn-sm btn-p" onclick="authModal(\'register\')">حساب جديد</button>';
+}
+
+/* ===========================================================
+   الصفحة الرئيسية
+   =========================================================== */
 function paintHome(d){
   var s=d.settings||{};
-  el('t-name').textContent  = s.site_name || 'دربك';
-  el('t-phone').textContent = s.phone || '—';
-  el('t-email').textContent = s.email || '—';
-  el('f-phone').textContent = s.phone || '—';
-  el('f-email').textContent = s.email || '—';
-  el('t-branches').textContent = d.branches.length + ' فرع';
-  el('t-avail').textContent = d.stats.cars_available + ' سيارة';
-  el('t-from').textContent  = d.stats.price_from ? money(d.stats.price_from) : '—';
-  el('t-cancel').textContent= 'إلغاء مجاني قبل ' + (s.free_cancel_hours||24) + ' ساعة';
-  el('f-vat').textContent   = s.vat_number ? ('الرقم الضريبي: '+s.vat_number) : '';
+  el('t-name').textContent=s.site_name||'دربك';
+  el('t-phone').textContent=s.phone||'—';
+  el('f-phone').textContent=s.phone||'—';
+  el('f-email').textContent=s.email||'—';
+  el('t-cities').textContent=d.stats.branches+' فروع · '+(d.cities||[]).join(' · ');
+  el('t-cancel').textContent='إلغاء مجاني قبل '+(s.free_cancel_hours||24)+' ساعة';
+  el('f-vat').textContent=s.vat_number?('الرقم الضريبي: '+s.vat_number+' · السجل: '+(s.cr_number||'')):'';
+  el('f-cr').textContent='© '+new Date().getFullYear()+' '+(s.site_name||'دربك')+' — جميع الحقوق محفوظة';
 
-  var pb=el('f-pickup-branch'), db=el('f-dropoff-branch');
+  var top=(d.categories||[]).filter(function(c){ return c.image; })[0];
+  el('heroimg').innerHTML=(top?'<img src="'+esc(top.image)+'" alt="">':'')+
+    '<div class="fade"></div>'+
+    '<div class="fl a">متاح الآن <b>'+d.stats.cars_available+' سيارة</b></div>'+
+    '<div class="cap"><b>من '+money(d.stats.price_from)+' / يوم</b>'+
+    '<small>'+d.stats.cars_total+' سيارة في '+d.stats.cities+' مدن</small></div>';
+
+  var pb=el('f-pb'), db=el('f-db');
   pb.innerHTML='<option value="">كل الفروع</option>';
   db.innerHTML='<option value="">نفس مكان الاستلام</option>';
-  d.branches.forEach(function(b){
-    var o='<option value="'+esc(b.branch_id)+'">'+esc(b.name)+'</option>';
+  (d.branches||[]).forEach(function(b){
+    var o='<option value="'+esc(b.branch_id)+'">'+esc(b.name)+' — '+esc(b.city)+'</option>';
     pb.insertAdjacentHTML('beforeend',o); db.insertAdjacentHTML('beforeend',o);
   });
 
-  el('cats').innerHTML = d.categories.length ? d.categories.map(function(c){
-    return '<div class="cat" data-cat="'+esc(c.category_id)+'" onclick="pickCategory(\''+esc(c.category_id)+'\')">'+
-      '<span>'+esc(c.icon||'🚗')+'</span>'+esc(c.name)+
-      '<small>'+(c.price_from?('من '+money(c.price_from)):'')+' · '+c.count+' متاحة</small></div>';
-  }).join('') : '<div class="empty" style="grid-column:1/-1"><b>لا توجد تصنيفات</b>أضفها من لوحة التحكم</div>';
-
-  if(d.offers.length){
-    var o=d.offers[0];
-    el('offers-box').innerHTML='<div class="band"><div><h2>'+esc(o.title)+'</h2><p>'+esc(o.description)+'</p></div>'+
-      (o.coupon_code?'<div class="code"><small>كود الخصم</small><b>'+esc(o.coupon_code)+'</b></div>':'')+'</div>';
-  } else el('offers-box').innerHTML='';
-
-  el('quotes-sec').hidden = !d.testimonials.length;
-  el('quotes').innerHTML = d.testimonials.map(function(t){
-    return '<div class="q"><p>«'+esc(t.text)+'»</p><div class="who"><span class="av">'+
-      esc(String(t.name||'؟').charAt(0))+'</span><div><b>'+esc(t.name)+
-      '</b><div style="font-size:12px;color:var(--mut)">'+esc(t.city)+' · '+'★'.repeat(t.rating||5)+'</div></div></div></div>';
+  el('cats').innerHTML=(d.categories||[]).map(function(c){
+    return '<div class="cat'+(Q.cat===c.category_id?' on':'')+'" data-cat="'+esc(c.category_id)+'" '+
+      'onclick="pickCat(\''+esc(c.category_id)+'\')">'+
+      '<div class="im"><img src="'+esc(c.image||ph())+'" alt="'+esc(c.name)+'" loading="lazy"></div>'+
+      '<div class="bd"><b>'+esc(c.icon||'')+' '+esc(c.name)+'</b>'+
+      '<small>من '+money(c.price_from)+' · '+c.count+' متاحة</small></div></div>';
   }).join('');
 
-  el('faq-box').innerHTML = d.faq.length ? d.faq.map(function(f,i){
-    return '<div class="it" onclick="toggleFaq('+i+')">'+esc(f.question)+' <span id="fi-'+i+'">+</span></div>'+
-           '<div class="ans" id="fa-'+i+'" hidden>'+esc(f.answer)+'</div>';
-  }).join('') : '<div class="empty"><b>لا توجد أسئلة</b>أضفها من لوحة التحكم</div>';
+  el('offers-box').innerHTML=(d.offers||[]).length ? (
+    '<div class="sh"><div><h2>العروض الحالية</h2></div></div><div class="cards">'+
+    d.offers.map(function(o){
+      return '<div class="c"><div class="bd"><h3>'+esc(o.title)+'</h3>'+
+        '<p style="color:var(--mut);font-size:13.5px;line-height:1.8;margin:8px 0 14px">'+esc(o.description)+'</p>'+
+        (o.coupon_code?'<div class="tag w" style="font-size:14px;padding:7px 13px;letter-spacing:2px">'+esc(o.coupon_code)+'</div>':'')+
+        '</div></div>';
+    }).join('')+'</div>') : '';
 
-  el('branches-box').innerHTML = d.branches.length ? d.branches.map(function(b){
-    return '<div class="branch"><span class="d">'+(b.is_airport?'✈':'◉')+'</span><div><b>'+esc(b.name)+
-      '</b><small>'+esc(b.address||b.area||b.city||'')+(b.open_time?(' · '+esc(b.open_time)+' – '+esc(b.close_time)):'')+
-      '</small></div><div class="sp"></div><button class="btn btn-g btn-sm" onclick="pickBranch(\''+esc(b.branch_id)+'\')">احجز منه</button></div>';
-  }).join('') : '<div class="empty"><b>لا توجد فروع</b>أضفها من لوحة التحكم</div>';
+  el('tiers').innerHTML=(d.tiers||[]).map(function(t){
+    return '<div class="cat"><div class="bd" style="padding:18px 12px">'+
+      '<b style="font-size:26px;color:var(--p)">'+t.percent+'٪</b>'+
+      '<small style="font-size:13px">'+(t.max_days?('من '+t.min_days+' إلى '+t.max_days+' يوم'):(t.min_days+' يوم أو أكثر'))+'</small>'+
+      '</div></div>';
+  }).join('');
+
+  el('howto').innerHTML=[
+    ['١','بيانات الرحلة','المكان والتاريخ'],
+    ['٢','اختيار السيارة','فلترة ومقارنة'],
+    ['٣','الإضافات','سائق · مقعد أطفال · تأمين'],
+    ['٤','بياناتك','مرة واحدة على حسابك'],
+    ['٥','الاعتماد والاستلام','الفرع يعتمد ثم تستلم']
+  ].map(function(x){
+    return '<div class="cat"><div class="bd" style="padding:16px 12px">'+
+      '<b style="display:block;width:30px;height:30px;border-radius:50%;background:var(--p);color:#fff;'+
+      'line-height:30px;margin:0 auto 8px">'+x[0]+'</b><b>'+x[1]+'</b>'+
+      '<small>'+x[2]+'</small></div></div>';
+  }).join('');
+
+  el('faq-box').innerHTML=(d.faq||[]).map(function(f,i){
+    return '<div class="box" style="padding:0;margin-bottom:9px">'+
+      '<div onclick="tglFaq('+i+')" style="padding:14px 16px;font-weight:700;cursor:pointer;display:flex;gap:10px">'+
+      '<span>'+esc(f.question)+'</span><div class="sp"></div><span id="fi-'+i+'" style="color:var(--p);font-size:19px">+</span></div>'+
+      '<div id="fa-'+i+'" hidden style="padding:0 16px 14px;color:var(--mut);font-size:13.5px;line-height:1.9;font-weight:600">'+
+      esc(f.answer)+'</div></div>';
+  }).join('');
+
+  el('br-box').innerHTML=(d.branches||[]).map(function(b){
+    return '<div class="box" style="display:flex;gap:12px;align-items:center;padding:14px 16px;margin-bottom:9px">'+
+      '<span style="width:38px;height:38px;border-radius:11px;background:var(--p-l);display:grid;'+
+      'place-items:center;color:var(--p);font-weight:900;flex:none">'+(b.is_airport?'✈':'◉')+'</span>'+
+      '<div><b>'+esc(b.name)+'</b><div style="color:var(--mut);font-size:12.5px;font-weight:600">'+
+      esc(b.address||b.area)+' · '+esc(b.open_time)+' – '+esc(b.close_time)+'</div></div>'+
+      '<div class="sp"></div><button class="btn btn-g btn-sm" onclick="pickBranch(\''+esc(b.branch_id)+'\')">احجز منه</button></div>';
+  }).join('');
+
+  el('quotes').innerHTML=(d.testimonials||[]).map(function(t){
+    return '<div class="c"><div class="bd">'+
+      '<div class="stars">'+stars(t.rating)+'</div>'+
+      '<p style="color:var(--mut);font-size:13.5px;line-height:1.85;margin:9px 0 13px;font-weight:600">«'+esc(t.text)+'»</p>'+
+      '<div style="display:flex;align-items:center;gap:9px">'+
+      '<span style="width:34px;height:34px;border-radius:50%;background:var(--p);color:#fff;display:grid;'+
+      'place-items:center;font-weight:800">'+esc(String(t.name||'؟').charAt(0))+'</span>'+
+      '<div><b style="font-size:13.5px">'+esc(t.name)+'</b>'+
+      '<div style="font-size:11.5px;color:var(--mut)">'+esc(t.city)+'</div></div></div></div></div>';
+  }).join('');
+
+  paintFilters();
 }
 
-function toggleFaq(i){ var a=el('fa-'+i); a.hidden=!a.hidden; el('fi-'+i).textContent=a.hidden?'+':'−'; }
-function pickCategory(id){
-  STATE.category_id = (STATE.category_id===id)?'':id;
-  document.querySelectorAll('.cat').forEach(function(c){ c.classList.toggle('on', c.dataset.cat===STATE.category_id); });
-  doSearch(true);
-}
-function clearCategory(){ STATE.category_id=''; document.querySelectorAll('.cat').forEach(function(c){c.classList.remove('on');}); doSearch(true); }
-function pickBranch(id){ el('f-pickup-branch').value=id; doSearch(true); }
+function tglFaq(i){ var a=el('fa-'+i); a.hidden=!a.hidden; el('fi-'+i).textContent=a.hidden?'+':'−'; }
+function pickCat(id){ Q.cat=(Q.cat===id)?'':id;
+  document.querySelectorAll('.cat[data-cat]').forEach(function(c){ c.classList.toggle('on',c.dataset.cat===Q.cat); });
+  search(true); }
+function pickBranch(id){ el('f-pb').value=id; Q.pb=id; if(el('f-same').checked) Q.db=id; search(true); }
 
-function doSearch(scroll){
+/* ---------- الفلاتر ---------- */
+function paintFilters(){
+  if(!HOME) return;
+  var brands=[];
+  el('filters').innerHTML=
+    '<h4 style="font-size:15.5px;margin-bottom:10px">تصفية النتائج</h4>'+
+    '<div class="fg"><b>السعر اليومي</b><div class="two-in">'+
+      '<input type="number" id="x-pmin" placeholder="من" style="font-size:13px">'+
+      '<input type="number" id="x-pmax" placeholder="إلى" style="font-size:13px"></div></div>'+
+    '<div class="fg"><b>ناقل الحركة</b>'+
+      '<label><input type="radio" name="x-tr" value="" checked> الكل</label>'+
+      '<label><input type="radio" name="x-tr" value="auto"> أوتوماتيك</label>'+
+      '<label><input type="radio" name="x-tr" value="manual"> عادي</label></div>'+
+    '<div class="fg"><b>نوع الوقود</b>'+
+      '<label><input type="radio" name="x-fu" value="" checked> الكل</label>'+
+      '<label><input type="radio" name="x-fu" value="بنزين"> بنزين</label>'+
+      '<label><input type="radio" name="x-fu" value="ديزل"> ديزل</label>'+
+      '<label><input type="radio" name="x-fu" value="هايبرد"> هايبرد</label></div>'+
+    '<div class="fg"><b>عدد المقاعد</b>'+
+      '<label><input type="radio" name="x-st" value="" checked> الكل</label>'+
+      '<label><input type="radio" name="x-st" value="5"> ٥ أو أكثر</label>'+
+      '<label><input type="radio" name="x-st" value="7"> ٧ أو أكثر</label></div>'+
+    '<div class="fg"><b>مميزات</b>'+
+      '<label><input type="checkbox" id="x-dr"> متاحة بسائق</label>'+
+      '<label><input type="checkbox" id="x-dl"> متاحة للتوصيل</label>'+
+      '<label><input type="checkbox" id="x-fc"> تأمين شامل متاح</label></div>'+
+    '<div style="display:flex;gap:8px;margin-top:12px">'+
+      '<button class="btn btn-p btn-sm" style="flex:1" onclick="applyFilters()">تطبيق</button>'+
+      '<button class="btn btn-g btn-sm" onclick="clearFilters()">مسح</button></div>';
+}
+function applyFilters(){
+  var r=function(n){ var x=document.querySelector('input[name="'+n+'"]:checked'); return x?x.value:''; };
+  Q.filters={ price_min:el('x-pmin').value, price_max:el('x-pmax').value,
+    transmission:r('x-tr'), fuel:r('x-fu'), seats_min:r('x-st'),
+    with_driver:el('x-dr').checked, delivery:el('x-dl').checked, full_cover:el('x-fc').checked };
+  search(true);
+}
+function clearFilters(){ Q.filters={}; paintFilters(); search(true); }
+
+/* ===========================================================
+   البحث
+   =========================================================== */
+function search(scroll){
   if(!READY) return;
-  var q={
-    pickup_branch_id: el('f-pickup-branch').value,
-    pickup_at: el('f-pickup-at').value, dropoff_at: el('f-dropoff-at').value,
-    category_id: STATE.category_id,
-    delivery: el('f-delivery').checked, insurance_full: el('f-insurance').checked,
-    with_driver: STATE.mode==='driver', sort: STATE.sort
-  };
-  el('f-search').disabled=true; el('f-search').textContent='جاري البحث…';
-  el('r-list').innerHTML='<div class="skel" style="height:176px"></div>';
-  apiGet('search', q).then(function(d){
-    el('f-search').disabled=false; el('f-search').textContent='ابحث عن سيارة';
-    paintResults(d,q);
+  var p=Object.assign({
+    pickup_branch_id:Q.pb, dropoff_branch_id:Q.db||Q.pb,
+    pickup_at:Q.from, dropoff_at:Q.to, category_id:Q.cat,
+    with_driver:Q.mode==='driver', delivery:Q.deliv, sort:Q.sort
+  }, Q.filters);
+
+  el('f-go').disabled=true; el('f-go').textContent='...';
+  el('r-list').innerHTML='<div class="cards">'+'<div class="skel" style="height:330px"></div>'.repeat(3)+'</div>';
+
+  apiGet('search',p).then(function(d){
+    el('f-go').disabled=false; el('f-go').textContent='ابحث';
+    var br=(HOME&&HOME.branches||[]).filter(function(b){ return b.branch_id===Q.pb; })[0];
+    var cat=(HOME&&HOME.categories||[]).filter(function(c){ return c.category_id===Q.cat; })[0];
+    el('r-h2').textContent=cat?cat.name:'السيارات المتاحة';
+    el('r-sub').textContent=(br?br.name:'كل الفروع')+' · '+d.days+' يوم · '+
+      el('f-from').value.replace('T',' ')+' ← '+el('f-to').value.replace('T',' ');
+    el('r-cnt').textContent=d.available_count+' متاحة من '+d.count;
+    el('r-vat').textContent='الأسعار شاملة ضريبة '+d.tax_percent+'٪';
+    paintCards(d);
     if(scroll) el('results').scrollIntoView({behavior:'smooth',block:'start'});
   }).catch(function(e){
-    el('f-search').disabled=false; el('f-search').textContent='ابحث عن سيارة';
+    el('f-go').disabled=false; el('f-go').textContent='ابحث';
     el('r-list').innerHTML='<div class="empty"><b>تعذر البحث</b>'+esc(e.message)+'</div>';
   });
 }
 
-function carSvg(seed){
-  var c=['#9fcdc6','#bfe0d7','#cfd8e8','#f3dcae','#d8cbe8','#c9e2ef'];
-  var k=['#0e5f55','#0f9d6e','#334155','#8a5f00','#6d4a9c','#2b6c8f'];
-  var i=(String(seed).charCodeAt(String(seed).length-1)||0)%c.length;
-  return '<svg viewBox="0 0 300 110">'+
-    '<path d="M34 84c-8 0-13-4-13-11 0-8 6-13 15-15l26-5 20-17c5-4 11-6 18-6h50c9 0 16 3 21 8l17 16 30 6c12 2 18 7 18 14 0 6-5 10-13 10H34z" fill="'+c[i]+'" stroke="'+k[i]+'" stroke-width="2"/>'+
-    '<path d="M104 46h44v24H82l22-24z" fill="'+k[i]+'" opacity=".25"/>'+
-    '<circle cx="88" cy="84" r="15" fill="#fff" stroke="'+k[i]+'" stroke-width="2.5"/>'+
-    '<circle cx="222" cy="84" r="15" fill="#fff" stroke="'+k[i]+'" stroke-width="2.5"/></svg>';
-}
-
-function paintResults(d,q){
-  var br=(HOME&&HOME.branches.filter(function(b){return b.branch_id===q.pickup_branch_id;})[0])||{};
-  el('r-sub').textContent=(br.name||'كل الفروع')+' · '+d.days+' أيام';
-  el('r-count').textContent=d.count+' سيارة متاحة';
-  el('r-info').textContent='الأسعار شاملة ضريبة القيمة المضافة '+d.tax_percent+'٪';
-
+function paintCards(d){
   if(!d.cars.length){
-    el('r-list').innerHTML='<div class="empty"><b>لا توجد سيارات متاحة</b>'+
-      'جرّب تغيير التاريخ أو الفرع، أو أضف سيارات من لوحة التحكم.</div>';
+    el('r-list').innerHTML='<div class="empty"><b>لا توجد سيارات بالمواصفات دي</b>'+
+      'جرّب تغيير التاريخ أو الفرع أو امسح الفلاتر.</div>';
     return;
   }
-  el('r-list').innerHTML=d.cars.map(function(c){
-    var img=c.images&&c.images.length?'<img src="'+esc(c.images[0])+'" alt="'+esc(c.name)+'">':carSvg(c.car_id);
-    var chips=[c.seats+' مقاعد', c.transmission==='auto'?'أوتوماتيك':'عادي', c.fuel, c.luggage+' حقائب']
-      .concat(c.km_limit_day?[c.km_limit_day+' كم/يوم']:[])
-      .concat(c.ac?['مكيف']:[]).concat(c.delivery_available?['متاحة للتوصيل']:[])
-      .concat(c.with_driver?['سائق متاح']:[]).filter(function(x){return x&&String(x).trim();});
-    var badge=c.insurance_full?'<span class="badge">تأمين شامل</span>':'<span class="badge a">إلغاء مجاني</span>';
-    return '<div class="row"><div class="img">'+badge+img+'</div>'+
-      '<div class="mid"><h3>'+esc(c.name)+' <span style="font-size:13px;color:var(--mut);font-weight:600">أو مماثل</span></h3>'+
-      '<div class="sub">'+esc(c.category_name)+' · '+(c.year||'')+' · '+esc(c.branch_name)+'</div>'+
-      '<div class="chips">'+chips.map(function(x){return '<span class="chip">'+esc(x)+'</span>';}).join('')+'</div>'+
-      '<div class="rate"><i>'+'★'.repeat(Math.round(c.rating)||5)+'</i> '+(c.rating_count?('<b>'+c.rating+'</b> ('+c.rating_count+' تقييم) · '):'')+
-      'تأمين '+money(c.deposit)+' مسترد</div></div>'+
-      '<div class="right"><small>السعر اليومي</small><div class="big">'+money(c.price_day)+'</div>'+
-      '<small>إجمالي '+c.days+' أيام: '+money(c.grand_total)+'</small>'+
-      '<button class="btn btn-p" onclick="soon(\'خطوات الحجز\')">احجز الآن</button>'+
-      '<button class="btn btn-g" onclick="soon(\'تفاصيل السيارة\')">عرض التفاصيل</button></div></div>';
-  }).join('');
+  el('r-list').innerHTML='<div class="cards">'+d.cars.map(function(c){
+    var badge = !c.available ? '<span class="badge no">محجوزة بالكامل</span>'
+      : c.insurance_policy==='full_required' ? '<span class="badge">تأمين شامل</span>'
+      : c.duration_percent ? '<span class="badge a">خصم '+c.duration_percent+'٪</span>'
+      : '<span class="badge">إلغاء مجاني</span>';
+    return '<div class="c">'+
+      '<div class="im"><img src="'+esc(imgOf(c.images))+'" alt="'+esc(c.name)+'" loading="lazy">'+badge+
+      (c.available?'<span class="units">'+c.units_left+' متاحة</span>':'')+'</div>'+
+      '<div class="bd">'+
+        '<h3>'+esc(c.name)+' <span style="font-size:12px;color:var(--mut);font-weight:600">'+c.year+'</span></h3>'+
+        '<div class="sub">'+esc(c.category_name)+' · '+esc(c.branch_name)+' · '+esc(c.color)+'</div>'+
+        '<div class="specs">'+
+          '<div><b>'+c.seats+'</b>مقاعد</div>'+
+          '<div><b>'+(c.transmission==='auto'?'أوتو':'عادي')+'</b>الحركة</div>'+
+          '<div><b>'+esc(c.fuel)+'</b>الوقود</div>'+
+          '<div><b>'+(c.km_policy==='unlimited'?'∞':c.km_limit_day)+'</b>كم/يوم</div>'+
+        '</div>'+
+        '<div class="stars" style="font-size:12.5px">'+stars(c.rating)+
+          ' <span style="color:var(--mut);font-weight:600">'+c.rating+' ('+c.rating_count+')</span></div>'+
+        '<div class="pr"><div><div class="n">'+money(c.price_day)+'</div>'+
+          '<small>إجمالي '+c.days+' يوم: '+money(c.grand_total)+'</small></div>'+
+          '<div class="sp"></div>'+
+          (c.available
+            ? '<button class="btn btn-p btn-sm" onclick="go(\'#/book/'+esc(c.car_id)+'\')">احجز</button>'
+            : '<button class="btn btn-g btn-sm" onclick="go(\'#/book/'+esc(c.car_id)+'\')">طلب انتظار</button>')+
+          '<button class="btn btn-g btn-sm" onclick="go(\'#/car/'+esc(c.car_id)+'\')">تفاصيل</button>'+
+        '</div>'+
+      '</div></div>';
+  }).join('')+'</div>';
 }
 
 /* ===========================================================
+   تفاصيل السيارة
+   =========================================================== */
+function loadCar(id){
+  el('car-box').innerHTML='<div class="skel" style="height:420px"></div>';
+  apiGet('car',{car_id:id,pickup_branch_id:Q.pb,dropoff_branch_id:Q.db,
+    pickup_at:Q.from,dropoff_at:Q.to}).then(paintCar)
+    .catch(function(e){ el('car-box').innerHTML='<div class="empty"><b>تعذر التحميل</b>'+esc(e.message)+'</div>'; });
+}
+
+function paintCar(c){
+  var q=c.quote, imgs=c.images.length?c.images:[ph()];
+  var pol={ pooled:'الحد اليومي يُجمع على المدة كاملة', unlimited:'كيلومترات غير محدودة',
+    strict_daily:'حد لكل يوم على حدة', customer_option:'حد عادي ويمكن شراء زيادة' }[q.km_policy]||'';
+  var fuel={ same_level:'يُعاد بنفس مستوى الوقود', full_to_full:'يُستلم ويُعاد ممتلئًا',
+    prepaid:'تانك مدفوع مقدمًا' }[q.fuel_policy]||'';
+  var cancel = q.cancel_policy==='free' ? 'إلغاء مجاني في أي وقت'
+    : q.cancel_policy==='free_before_hours' ? ('مجاني قبل '+q.cancel_value+' ساعة، وبعدها يُخصم يوم')
+    : q.cancel_policy==='tiered' ? 'شرائح: مجاني قبل ٤٨ ساعة، ٥٠٪ من العربون قبل ٢٤، ثم العربون كاملًا'
+    : 'بدون استرداد بعد الاعتماد';
+  var payTxt={ none:'بدون دفع مقدم — الدفع عند الاستلام',
+    deposit_percent:'عربون '+q.payment_value+'٪ من الإجمالي', deposit_fixed:'عربون '+money(q.payment_value),
+    one_day:'عربون يوم واحد', full:'الدفع الكامل قبل الاستلام' }[q.payment_policy]||'';
+
+  el('car-box').innerHTML=
+  '<div class="det"><div>'+
+    '<div class="gal"><div class="main"><img id="gmain" src="'+esc(imgs[0])+'" alt="'+esc(c.name)+'"></div>'+
+      (imgs.length>1?'<div class="thumbs">'+imgs.map(function(u,i){
+        return '<div class="'+(i?'':'on')+'" onclick="swap('+i+',\''+esc(u)+'\')"><img src="'+esc(u)+'" alt=""></div>';
+      }).join('')+'</div>':'')+'</div>'+
+
+    '<div class="box" style="margin-top:16px">'+
+      '<h2 style="font-size:26px">'+esc(c.name)+' <span style="font-size:15px;color:var(--mut);font-weight:700">'+c.year+'</span></h2>'+
+      '<div style="color:var(--mut);font-size:13.5px;font-weight:600;margin-top:4px">'+
+        esc(c.category_name)+' · '+esc(c.branch_name)+' · '+esc(c.city)+' · اللون '+esc(c.color)+'</div>'+
+      '<div class="stars" style="margin-top:8px">'+stars(c.rating)+
+        ' <span style="color:var(--mut);font-weight:600;font-size:13px">'+c.rating+' من '+c.rating_count+' تقييم · '+c.bookings_count+' حجز</span></div>'+
+      '<div class="msg info" style="margin-top:14px">تُحجز هذه الفئة بالفئة لا بالسيارة — ستحصل على هذه السيارة أو مماثلة من نفس الفئة، ويحددها الفرع وقت التسليم.</div>'+
+      '<div class="specs" style="grid-template-columns:repeat(6,1fr)">'+
+        '<div><b>'+c.seats+'</b>مقاعد</div><div><b>'+c.doors+'</b>أبواب</div>'+
+        '<div><b>'+c.luggage+'</b>حقائب</div><div><b>'+(c.transmission==='auto'?'أوتو':'عادي')+'</b>الحركة</div>'+
+        '<div><b>'+esc(c.fuel)+'</b>الوقود</div><div><b>'+(c.ac?'نعم':'لا')+'</b>مكيف</div></div>'+
+      (c.features.length?'<h4 style="margin:16px 0 9px">المميزات</h4><div class="chips">'+
+        c.features.map(function(f){ return '<span class="chip">'+esc(f)+'</span>'; }).join('')+'</div>':'')+
+    '</div>'+
+
+    '<div class="box"><h4>الشروط والسياسات</h4>'+
+      '<div class="kv"><span>الكيلومترات</span><b>'+(q.km_policy==='unlimited'?'غير محدودة':(q.km_limit_day+' كم/يوم · رصيد '+q.km_allowance+' كم'))+'</b></div>'+
+      '<div class="kv"><span>الكيلومتر الإضافي</span><b>'+(q.km_policy==='unlimited'?'—':money(q.extra_km_cost,true))+'</b></div>'+
+      '<div class="kv"><span>سياسة الوقود</span><b>'+esc(fuel)+'</b></div>'+
+      '<div class="kv"><span>مبلغ الأمانة</span><b>'+money(q.deposit)+' (مسترد)</b></div>'+
+      '<div class="kv"><span>تحصيل الأمانة</span><b>'+({cash_branch:'نقدًا أو شبكة في الفرع',online:'إلكترونيًا',card_hold:'حجز على البطاقة',none:'بدون أمانة'}[q.deposit_method]||'')+'</b></div>'+
+      '<div class="kv"><span>الدفع</span><b>'+esc(payTxt)+'</b></div>'+
+      '<div class="kv"><span>الإلغاء</span><b>'+esc(cancel)+'</b></div>'+
+      '<div class="kv"><span>نظام الكيلومترات</span><b>'+esc(pol)+'</b></div>'+
+    '</div>'+
+
+    (c.reviews.length?'<div class="box"><h4>التقييمات</h4>'+c.reviews.map(function(r){
+      return '<div class="rev"><div class="who">'+esc(r.name)+
+        ' <span class="stars">'+stars(r.rating)+'</span>'+
+        '<div class="sp"></div><span style="color:var(--mut);font-weight:600;font-size:12px">'+esc(r.date)+'</span></div>'+
+        '<p>'+esc(r.comment)+'</p></div>';
+    }).join('')+'</div>':'')+
+
+    (c.similar.length?'<div class="box"><h4>سيارات مشابهة</h4><div class="cards" style="grid-template-columns:repeat(4,1fr)">'+
+      c.similar.map(function(s){
+        return '<div class="c" onclick="go(\'#/car/'+esc(s.car_id)+'\')" style="cursor:pointer">'+
+          '<div class="im" style="height:100px"><img src="'+esc(s.image||ph())+'" alt=""></div>'+
+          '<div class="bd" style="padding:10px"><b style="font-size:13px">'+esc(s.name)+'</b>'+
+          '<small style="color:var(--mut);display:block;font-size:11.5px">'+s.year+' · '+money(s.price_day)+'/يوم</small></div></div>';
+      }).join('')+'</div></div>':'')+
+  '</div>'+
+
+  '<div><div class="box" style="position:sticky;top:86px">'+
+    '<div style="font-size:13px;color:var(--mut);font-weight:700">السعر لمدة '+q.days+' يوم</div>'+
+    '<div style="font-size:32px;font-weight:900;color:var(--p);letter-spacing:-1.5px;margin:4px 0 12px">'+money(q.grand_total)+'</div>'+
+    '<div class="kv"><span>سعر اليوم</span><b>'+money(q.price_day)+'</b></div>'+
+    '<div class="kv"><span>الإيجار '+q.days+' يوم</span><b>'+money(q.rent_raw)+'</b></div>'+
+    (q.duration_discount?'<div class="kv"><span>خصم المدة '+q.duration_percent+'٪</span><b style="color:var(--ok)">− '+money(q.duration_discount)+'</b></div>':'')+
+    (q.oneway_fee?'<div class="kv"><span>تسليم بين المدن</span><b>'+money(q.oneway_fee)+'</b></div>':'')+
+    '<div class="kv"><span>ضريبة '+q.vat_percent+'٪</span><b>'+money(q.vat,true)+'</b></div>'+
+    '<div class="kv tot"><span>الإجمالي</span><b>'+money(q.grand_total)+'</b></div>'+
+    '<div class="kv"><span>أمانة مستردة</span><b>'+money(q.deposit)+'</b></div>'+
+    '<div class="kv"><span>المطلوب الآن</span><b>'+(q.payable_now?money(q.payable_now):'لا شيء')+'</b></div>'+
+    (c.available
+      ? '<button class="btn btn-p btn-lg" style="width:100%;margin-top:14px" onclick="go(\'#/book/'+esc(c.car_id)+'\')">احجز الآن</button>'
+      : '<div class="msg err" style="margin-top:14px">الفئة محجوزة بالكامل في التواريخ دي</div>'+
+        '<button class="btn btn-g" style="width:100%" onclick="go(\'#/book/'+esc(c.car_id)+'\')">سجّل طلب انتظار</button>')+
+    '<div style="color:var(--mut);font-size:11.5px;text-align:center;margin-top:9px">الحجز يحتاج اعتماد الفرع</div>'+
+  '</div></div></div>';
+}
+function swap(i,u){ el('gmain').src=u;
+  document.querySelectorAll('.thumbs div').forEach(function(d,j){ d.classList.toggle('on',i===j); }); }
+
+/* ===========================================================
+   خطوات الحجز
+   =========================================================== */
+function startBooking(carId){
+  if(!BK || BK.car_id!==carId){
+    BK={ car_id:carId, step:1, extras:{}, coupon:'', deliv_area:'', quote:null, car:null, submitted:null };
+  }
+  el('bk-main').innerHTML='<div class="skel" style="height:300px"></div>'; el('bk-side').innerHTML='';
+  apiGet('car',{car_id:carId,pickup_branch_id:Q.pb,dropoff_branch_id:Q.db,
+    pickup_at:Q.from,dropoff_at:Q.to}).then(function(c){
+    BK.car=c; refreshQuote();
+  }).catch(function(e){ el('bk-main').innerHTML='<div class="empty"><b>تعذر التحميل</b>'+esc(e.message)+'</div>'; });
+}
+
+function bkParams(){
+  var ex=[]; Object.keys(BK.extras).forEach(function(k){ if(BK.extras[k]>0) ex.push({id:k,qty:BK.extras[k]}); });
+  return { category_id:BK.car.category_id, display_car_id:BK.car.car_id,
+    pickup_branch_id:Q.pb||BK.car.branch_id, dropoff_branch_id:Q.db||Q.pb||BK.car.branch_id,
+    pickup_at:Q.from, dropoff_at:Q.to, extras:ex, coupon_code:BK.coupon,
+    delivery_area:BK.deliv_area };
+}
+
+function refreshQuote(){
+  apiGet('quote',bkParams()).then(function(q){ BK.quote=q; paintBooking(); })
+    .catch(function(e){ toast(e.message,true); });
+}
+
+function paintBooking(){
+  var names=['بيانات الرحلة','الإضافات','بياناتك','المراجعة والتأكيد'];
+  el('bk-steps').innerHTML=names.map(function(n,i){
+    var s=i+1, cl=BK.step===s?'on':(BK.step>s?'done':'');
+    return '<div class="stp '+cl+'" onclick="gotoStep('+s+')"><i>'+(BK.step>s?'✓':s)+'</i>'+n+'</div>';
+  }).join('');
+
+  if(BK.submitted){ paintDone(); return; }
+  if(BK.step===1) stepTrip();
+  else if(BK.step===2) stepExtras();
+  else if(BK.step===3) stepCustomer();
+  else stepReview();
+  paintSide();
+}
+function gotoStep(s){ if(BK.submitted) return; if(s<=BK.step||s===BK.step+1){ BK.step=s; paintBooking(); } }
+
+function stepTrip(){
+  var br=(HOME&&HOME.branches)||[];
+  var zones=(HOME&&HOME.zones)||[];
+  el('bk-main').innerHTML='<div class="box"><h4>بيانات الرحلة</h4><div class="form2">'+
+    '<div class="f"><span class="lbl">فرع الاستلام</span><select id="b-pb">'+
+      br.map(function(b){ return '<option value="'+esc(b.branch_id)+'"'+((Q.pb||BK.car.branch_id)===b.branch_id?' selected':'')+'>'+esc(b.name)+' — '+esc(b.city)+'</option>'; }).join('')+
+      '</select></div>'+
+    '<div class="f"><span class="lbl">فرع التسليم</span><select id="b-db">'+
+      br.map(function(b){ return '<option value="'+esc(b.branch_id)+'"'+((Q.db||Q.pb||BK.car.branch_id)===b.branch_id?' selected':'')+'>'+esc(b.name)+' — '+esc(b.city)+'</option>'; }).join('')+
+      '</select></div>'+
+    '<div class="f"><span class="lbl">تاريخ ووقت الاستلام</span><input type="datetime-local" id="b-from" value="'+esc(Q.from)+'"></div>'+
+    '<div class="f"><span class="lbl">تاريخ ووقت التسليم</span><input type="datetime-local" id="b-to" value="'+esc(Q.to)+'"></div>'+
+    '<div class="f full"><span class="lbl">توصيل السيارة لموقعك (اختياري)</span><select id="b-zone">'+
+      '<option value="">بدون توصيل — أستلم من الفرع</option>'+
+      zones.map(function(z){ return '<option value="'+esc(z.area)+'"'+(BK.deliv_area===z.area?' selected':'')+'>'+
+        esc(z.area)+' — '+esc(z.city)+' ('+money(z.fee)+(z.free_above?(' · مجاني فوق '+money(z.free_above)):'')+')</option>'; }).join('')+
+      '</select><small style="color:var(--mut);font-size:11.5px;margin-top:5px;display:block">'+
+      'الرسم استرشادي ويعتمده الفرع قبل التأكيد.</small></div>'+
+    '</div>'+
+    '<div style="display:flex;margin-top:16px"><div class="sp"></div>'+
+    '<button class="btn btn-p btn-lg" onclick="saveTrip()">التالي — الإضافات</button></div></div>';
+}
+function saveTrip(){
+  Q.pb=el('b-pb').value; Q.db=el('b-db').value;
+  Q.from=el('b-from').value; Q.to=el('b-to').value;
+  BK.deliv_area=el('b-zone').value;
+  el('f-pb').value=Q.pb; el('f-from').value=Q.from; el('f-to').value=Q.to; updDays();
+  BK.step=2;
+  refreshQuote();
+}
+
+function stepExtras(){
+  var ex=(HOME&&HOME.extras)||[];
+  el('bk-main').innerHTML='<div class="box"><h4>الإضافات</h4>'+
+    ex.map(function(e){
+      var n=BK.extras[e.extra_id]||0;
+      return '<div class="exrow'+(n?' on':'')+'">'+
+        '<span class="ic">'+esc(e.icon||'➕')+'</span>'+
+        '<div><b>'+esc(e.name)+'</b><small>'+esc(e.description||'')+' · '+
+          (e.unit==='per_day'?'لكل يوم':'لمرة واحدة')+'</small></div>'+
+        '<div class="sp"></div><span class="px">'+money(e.price)+'</span>'+
+        '<div class="qty">'+
+          '<button onclick="setEx(\''+esc(e.extra_id)+'\',-1,'+e.max_qty+')">−</button>'+
+          '<b style="min-width:18px;text-align:center">'+n+'</b>'+
+          '<button onclick="setEx(\''+esc(e.extra_id)+'\',1,'+e.max_qty+')">+</button>'+
+        '</div></div>';
+    }).join('')+
+    '<div class="f" style="margin-top:14px"><span class="lbl">كود الخصم</span>'+
+      '<div class="two-in"><input id="b-cp" value="'+esc(BK.coupon)+'" placeholder="مثال DARBAK15">'+
+      '<button class="btn btn-g" onclick="applyCoupon()">تطبيق</button></div>'+
+      (BK.quote&&BK.quote.coupon_message?'<div class="msg err" style="margin-top:9px">'+esc(BK.quote.coupon_message)+'</div>':'')+
+      (BK.quote&&BK.quote.coupon_discount?'<div class="msg ok" style="margin-top:9px">تم تطبيق خصم '+money(BK.quote.coupon_discount)+'</div>':'')+
+    '</div>'+
+    '<div style="display:flex;gap:9px;margin-top:16px"><button class="btn btn-g" onclick="gotoStep(1)">رجوع</button>'+
+    '<div class="sp"></div><button class="btn btn-p btn-lg" onclick="gotoStep(3)">التالي — بياناتك</button></div></div>';
+}
+function setEx(id,d,max){
+  var n=(BK.extras[id]||0)+d;
+  if(n<0) n=0; if(max&&n>max) n=max;
+  BK.extras[id]=n; refreshQuote();
+}
+function applyCoupon(){ BK.coupon=el('b-cp').value.trim().toUpperCase(); refreshQuote(); }
+
+function stepCustomer(){
+  if(!CSESS){
+    el('bk-main').innerHTML='<div class="box"><h4>بياناتك</h4>'+
+      '<div class="msg info">لازم تسجّل الدخول أو تعمل حساب قبل إتمام الحجز. بياناتك ومستنداتك تُحفظ مرة واحدة وتخدم كل حجوزاتك.</div>'+
+      '<div style="display:flex;gap:9px"><button class="btn btn-p" onclick="authModal(\'register\')">إنشاء حساب</button>'+
+      '<button class="btn btn-o" onclick="authModal(\'login\')">تسجيل الدخول</button></div>'+
+      '<div style="display:flex;gap:9px;margin-top:16px"><button class="btn btn-g" onclick="gotoStep(2)">رجوع</button></div></div>';
+    return;
+  }
+  el('bk-main').innerHTML='<div class="box"><h4>بياناتك</h4><div id="cust-info" class="skel" style="height:140px"></div>'+
+    '<div style="display:flex;gap:9px;margin-top:16px"><button class="btn btn-g" onclick="gotoStep(2)">رجوع</button>'+
+    '<div class="sp"></div><button class="btn btn-p btn-lg" onclick="gotoStep(4)">التالي — المراجعة</button></div></div>';
+  apiGet('me',{session:CSESS}).then(function(d){
+    CUSTOMER=d.customer;
+    var docs=d.documents||[];
+    var bad=docs.filter(function(x){ return x.status!=='approved'; });
+    el('cust-info').className='';
+    el('cust-info').innerHTML=
+      '<div class="kv"><span>الاسم</span><b>'+esc(d.customer.full_name)+'</b></div>'+
+      '<div class="kv"><span>الجوال</span><b>'+esc(d.customer.phone)+'</b></div>'+
+      '<div class="kv"><span>الهوية / الإقامة</span><b>'+esc(d.customer.national_id||'—')+'</b></div>'+
+      '<div class="kv"><span>نوع العميل</span><b>'+({citizen:'سعودي',resident:'مقيم',visitor:'زائر'}[d.customer.customer_type]||'')+'</b></div>'+
+      '<div class="kv"><span>حالة المستندات</span><b>'+
+        ({complete:'<span class="tag ok">مكتملة</span>',incomplete:'<span class="tag no">ناقصة</span>',
+          pending_review:'<span class="tag w">تحت المراجعة</span>',
+          expired:'<span class="tag no">منتهية</span>'}[d.customer.docs_status]||'—')+'</b></div>'+
+      (docs.length?('<h4 style="margin:14px 0 8px">مستنداتك</h4>'+docs.map(function(x){
+        return '<div class="kv"><span>'+({national_id:'الهوية الوطنية',iqama:'الإقامة',
+          license_sa:'رخصة القيادة',license_intl:'رخصة دولية',passport:'جواز السفر'}[x.type]||x.type)+
+          ' · تنتهي '+esc(x.expiry_date)+'</span><b>'+
+          ({approved:'<span class="tag ok">معتمد</span>',pending:'<span class="tag w">مراجعة</span>',
+            rejected:'<span class="tag no">مرفوض</span>',expired:'<span class="tag no">منتهي</span>'}[x.status]||x.status)+
+          '</b></div>';
+      }).join('')):'')+
+      (bad.length||!docs.length?'<div class="msg info" style="margin-top:12px">الفرع يراجع مستنداتك مع الحجز. لو فيه مستند ناقص أو منتهي، تواصل معهم لرفعه قبل موعد الاستلام.</div>':'');
+  }).catch(function(e){
+    if(String(e.message).indexOf('الجلسة')!==-1){ CSESS=null; sessionStorage.removeItem('darbak_c'); paintAuth(); stepCustomer(); }
+    else toast(e.message,true);
+  });
+}
+
+function stepReview(){
+  var q=BK.quote||{};
+  el('bk-main').innerHTML='<div class="box"><h4>مراجعة الحجز</h4>'+
+    '<div style="display:flex;gap:14px;align-items:center;margin-bottom:14px">'+
+      '<div style="width:130px;height:88px;border-radius:12px;overflow:hidden;background:#e9efed;flex:none">'+
+      '<img src="'+esc(imgOf(BK.car.images))+'" style="width:100%;height:100%;object-fit:cover"></div>'+
+      '<div><b style="font-size:18px">'+esc(BK.car.name)+' '+BK.car.year+'</b>'+
+      '<div style="color:var(--mut);font-size:13px;font-weight:600">'+esc(BK.car.category_name)+' — أو مماثل من نفس الفئة</div></div></div>'+
+    '<div class="kv"><span>الاستلام</span><b>'+esc(Q.from.replace('T',' '))+'</b></div>'+
+    '<div class="kv"><span>التسليم</span><b>'+esc(Q.to.replace('T',' '))+'</b></div>'+
+    '<div class="kv"><span>المدة</span><b>'+q.days+' يوم</b></div>'+
+    '<div class="kv"><span>رصيد الكيلومترات</span><b>'+(q.km_policy==='unlimited'?'غير محدود':(q.km_allowance+' كم'))+'</b></div>'+
+    (BK.deliv_area?'<div class="kv"><span>التوصيل</span><b>'+esc(BK.deliv_area)+'</b></div>':'')+
+    ((q.extras||[]).length?('<h4 style="margin:14px 0 8px">الإضافات</h4>'+q.extras.map(function(e){
+      return '<div class="kv"><span>'+esc(e.name)+(e.qty>1?(' ×'+e.qty):'')+'</span><b>'+money(e.line)+'</b></div>'; }).join('')):'')+
+    '<div class="msg info" style="margin-top:14px">بالضغط على «تأكيد الحجز» توافق على '+
+      '<a onclick="openPage(\'terms\')" style="color:var(--p);font-weight:800;cursor:pointer">الشروط والأحكام</a> و'+
+      '<a onclick="openPage(\'cancel\')" style="color:var(--p);font-weight:800;cursor:pointer">سياسة الإلغاء</a>. '+
+      'الحجز لا يُعد مؤكدًا حتى يعتمده الفرع'+(q.payable_now?' ويتم سداد المطلوب':'')+'.</div>'+
+    '<div style="display:flex;gap:9px;margin-top:16px"><button class="btn btn-g" onclick="gotoStep(3)">رجوع</button>'+
+    '<div class="sp"></div><button class="btn btn-p btn-lg" id="bk-submit" onclick="submitBooking()">تأكيد الحجز</button></div></div>';
+}
+
+function paintSide(){
+  var q=BK.quote;
+  if(!q){ el('bk-side').innerHTML='<div class="skel" style="height:300px"></div>'; return; }
+  el('bk-side').innerHTML='<div class="box" style="position:sticky;top:20px">'+
+    '<h4>ملخص السعر</h4>'+
+    '<div class="kv"><span>سعر اليوم</span><b>'+money(q.price_day)+'</b></div>'+
+    '<div class="kv"><span>الإيجار × '+q.days+'</span><b>'+money(q.rent_raw)+'</b></div>'+
+    (q.duration_discount?'<div class="kv"><span>خصم المدة '+q.duration_percent+'٪</span><b style="color:var(--ok)">− '+money(q.duration_discount)+'</b></div>':'')+
+    (q.extras_total?'<div class="kv"><span>الإضافات</span><b>'+money(q.extras_total)+'</b></div>':'')+
+    (q.delivery_fee_suggested?'<div class="kv"><span>توصيل (استرشادي)</span><b>'+money(q.delivery_fee_suggested)+'</b></div>':'')+
+    (q.oneway_fee?'<div class="kv"><span>تسليم بين المدن</span><b>'+money(q.oneway_fee)+'</b></div>':'')+
+    (q.coupon_discount?'<div class="kv"><span>كوبون '+esc(q.coupon_code)+'</span><b style="color:var(--ok)">− '+money(q.coupon_discount)+'</b></div>':'')+
+    '<div class="kv"><span>قبل الضريبة</span><b>'+money(q.subtotal,true)+'</b></div>'+
+    '<div class="kv"><span>ضريبة '+q.vat_percent+'٪</span><b>'+money(q.vat,true)+'</b></div>'+
+    '<div class="kv tot"><span>الإجمالي</span><b>'+money(q.grand_total,true)+'</b></div>'+
+    '<div class="kv"><span>أمانة مستردة</span><b>'+money(q.deposit)+'</b></div>'+
+    '<div class="kv"><span>المطلوب الآن</span><b>'+(q.payable_now?money(q.payable_now,true):'لا شيء')+'</b></div>'+
+    (q.available===false?'<div class="msg err" style="margin-top:12px">الفئة محجوزة بالكامل — الحجز هيتسجل كطلب انتظار.</div>':'')+
+  '</div>';
+}
+
+function submitBooking(){
+  if(!CSESS){ authModal('login'); return; }
+  var btn=el('bk-submit'); btn.disabled=true; btn.textContent='جاري الإرسال…';
+  apiPost('book',Object.assign({session:CSESS},bkParams())).then(function(r){
+    BK.submitted=r; paintBooking();
+  }).catch(function(e){
+    btn.disabled=false; btn.textContent='تأكيد الحجز'; toast(e.message,true);
+  });
+}
+
+function paintDone(){
+  var r=BK.submitted, q=r.quote;
+  el('bk-steps').innerHTML='';
+  el('bk-main').innerHTML='<div class="box" style="text-align:center;padding:34px">'+
+    '<div style="font-size:54px">'+(r.waitlist?'🕐':'✅')+'</div>'+
+    '<h2 style="font-size:26px;margin:10px 0">'+(r.waitlist?'تم تسجيل طلبك في قائمة الانتظار':'تم استلام حجزك')+'</h2>'+
+    '<p style="color:var(--mut);line-height:1.9;max-width:520px;margin:0 auto 18px">'+esc(r.message)+'</p>'+
+    '<div class="box" style="max-width:430px;margin:0 auto;text-align:start">'+
+      '<div class="kv"><span>رقم الحجز</span><b style="font-size:17px">'+esc(r.booking_id)+'</b></div>'+
+      '<div class="kv"><span>الحالة</span><b>'+statusTag(r.status)+'</b></div>'+
+      '<div class="kv"><span>السيارة</span><b>'+esc(BK.car.name)+' أو مماثل</b></div>'+
+      '<div class="kv"><span>الاستلام</span><b>'+esc(Q.from.replace('T',' '))+'</b></div>'+
+      '<div class="kv tot"><span>الإجمالي</span><b>'+money(q.grand_total,true)+'</b></div>'+
+    '</div>'+
+    '<div style="display:flex;gap:9px;justify-content:center;margin-top:20px">'+
+      '<button class="btn btn-p" onclick="BK=null;go(\'#/account\')">حجوزاتي</button>'+
+      '<button class="btn btn-g" onclick="BK=null;go(\'#/\')">الرئيسية</button></div></div>';
+  el('bk-side').innerHTML='';
+}
+
+/* ===========================================================
+   الحالات
+   =========================================================== */
+var ST = {
+  waitlist:['قائمة انتظار','w'], pending_review:['بانتظار الاعتماد','w'],
+  price_changed:['بانتظار موافقتك على السعر','w'], awaiting_payment:['بانتظار الدفع','w'],
+  payment_review:['الإيصال تحت المراجعة','b'], confirmed:['مؤكد','ok'],
+  ready:['جاهز للاستلام','ok'], ongoing:['جاري الإيجار','b'],
+  completed:['مكتمل',''], canceled:['ملغي','no'], rejected:['مرفوض','no'],
+  expired:['منتهي','no'], no_show:['لم يحضر','no']
+};
+function statusTag(s){ var x=ST[s]||[s,'']; return '<span class="tag '+x[1]+'">'+esc(x[0])+'</span>'; }
+
+/* ===========================================================
+   تسجيل العملاء
+   =========================================================== */
+function authModal(mode){
+  var reg = mode==='register';
+  openModal(reg?'حساب جديد':'تسجيل الدخول',
+    (reg?
+      '<div class="form2">'+
+      '<div class="f full"><span class="lbl">الاسم الكامل</span><input id="r-name"></div>'+
+      '<div class="f"><span class="lbl">رقم الجوال</span><input id="r-phone" placeholder="05xxxxxxxx"></div>'+
+      '<div class="f"><span class="lbl">البريد الإلكتروني</span><input id="r-email" type="email"></div>'+
+      '<div class="f"><span class="lbl">نوع العميل</span><select id="r-type">'+
+        '<option value="citizen">سعودي</option><option value="resident">مقيم</option>'+
+        '<option value="visitor">زائر</option></select></div>'+
+      '<div class="f"><span class="lbl">رقم الهوية / الإقامة / الجواز</span><input id="r-nid"></div>'+
+      '<div class="f"><span class="lbl">تاريخ الميلاد</span><input id="r-bd" type="date"></div>'+
+      '<div class="f"><span class="lbl">المدينة</span><input id="r-city"></div>'+
+      '<div class="f full"><span class="lbl">كلمة المرور</span><input id="r-pass" type="password"></div>'+
+      '</div><div class="msg info" style="margin-top:12px">بعد التسجيل يوصلك رمز تحقق على الجوال. '+
+      'في وضع التجربة الرمز يظهر لك على الشاشة.</div>'
+    :
+      '<div class="f" style="margin-bottom:12px"><span class="lbl">رقم الجوال</span><input id="g-phone" placeholder="05xxxxxxxx"></div>'+
+      '<div class="f"><span class="lbl">كلمة المرور</span><input id="g-pass" type="password"></div>'+
+      '<div class="msg info" style="margin-top:12px">حساب تجريبي: <b>0551234567</b> / <b>123456</b></div>'
+    ),
+    '<div class="sp"></div><button class="btn btn-g" onclick="closeModal()">إلغاء</button>'+
+    '<button class="btn btn-p" id="auth-go">'+(reg?'إنشاء الحساب':'دخول')+'</button>');
+
+  el('auth-go').onclick = reg ? doRegister : doLogin;
+  var inp = el(reg?'r-name':'g-phone'); if(inp) inp.focus();
+}
+
+function doLogin(){
+  var b=el('auth-go'); b.disabled=true; b.textContent='...';
+  apiPost('login',{phone:el('g-phone').value,password:el('g-pass').value}).then(function(d){
+    CSESS=d.session; CUSTOMER=d.customer; sessionStorage.setItem('darbak_c',CSESS);
+    paintAuth(); closeModal(); toast('أهلاً '+d.customer.full_name);
+    if(location.hash.indexOf('#/book/')===0){ BK.step=3; paintBooking(); }
+    else if(location.hash.indexOf('#/account')===0) loadAccount();
+  }).catch(function(e){ b.disabled=false; b.textContent='دخول'; mmsg(e.message); });
+}
+
+function doRegister(){
+  var b=el('auth-go'); b.disabled=true; b.textContent='...';
+  apiPost('register',{
+    full_name:el('r-name').value, phone:el('r-phone').value, email:el('r-email').value,
+    customer_type:el('r-type').value, national_id:el('r-nid').value,
+    birth_date:el('r-bd').value, city:el('r-city').value, password:el('r-pass').value
+  }).then(function(d){
+    CSESS=d.session; sessionStorage.setItem('darbak_c',CSESS); paintAuth();
+    otpModal(d.otp_demo);
+  }).catch(function(e){ b.disabled=false; b.textContent='إنشاء الحساب'; mmsg(e.message); });
+}
+
+function otpModal(demo){
+  openModal('تحقق من جوالك',
+    '<div class="msg ok">تم إنشاء حسابك. أدخل رمز التحقق المرسل على جوالك.</div>'+
+    (demo?'<div class="msg info">وضع التجربة — الرمز: <b style="font-size:19px;letter-spacing:4px">'+esc(demo)+'</b></div>':'')+
+    '<div class="f"><span class="lbl">رمز التحقق</span><input id="o-code" maxlength="4" style="font-size:22px;letter-spacing:8px;text-align:center"></div>',
+    '<div class="sp"></div><button class="btn btn-g" onclick="skipOtp()">لاحقًا</button>'+
+    '<button class="btn btn-p" id="o-go">تحقق</button>');
+  el('o-go').onclick=function(){
+    apiPost('verify_otp',{session:CSESS,code:el('o-code').value}).then(function(){
+      closeModal(); toast('تم تأكيد جوالك ✅');
+      if(location.hash.indexOf('#/book/')===0){ BK.step=3; paintBooking(); } else loadAccount();
+    }).catch(function(e){ mmsg(e.message); });
+  };
+}
+function skipOtp(){ closeModal();
+  if(location.hash.indexOf('#/book/')===0){ BK.step=3; paintBooking(); } }
+
+function logoutCust(){ CSESS=null; CUSTOMER=null; sessionStorage.removeItem('darbak_c');
+  paintAuth(); go('#/'); toast('تم الخروج'); }
+
+/* ===========================================================
+   حساب العميل
+   =========================================================== */
+function loadAccount(){
+  if(!CSESS){
+    el('acc-box').innerHTML='<div class="empty"><b>سجّل الدخول لمتابعة حجوزاتك</b>'+
+      '<div style="margin-top:14px;display:flex;gap:9px;justify-content:center">'+
+      '<button class="btn btn-p" onclick="authModal(\'login\')">تسجيل الدخول</button>'+
+      '<button class="btn btn-o" onclick="authModal(\'register\')">حساب جديد</button></div></div>';
+    return;
+  }
+  el('acc-box').innerHTML='<div class="skel" style="height:260px"></div>';
+  Promise.all([apiGet('me',{session:CSESS}), apiGet('my_bookings',{session:CSESS})])
+    .then(function(r){ paintAccount(r[0],r[1]); })
+    .catch(function(e){
+      if(String(e.message).indexOf('الجلسة')!==-1){ CSESS=null; sessionStorage.removeItem('darbak_c'); paintAuth(); loadAccount(); }
+      else el('acc-box').innerHTML='<div class="empty"><b>تعذر التحميل</b>'+esc(e.message)+'</div>';
+    });
+}
+
+function paintAccount(d,bks){
+  var c=d.customer;
+  var groups=[
+    ['طلبات تحتاج إجراء منك',['price_changed','awaiting_payment']],
+    ['قيد المعالجة',['pending_review','payment_review','waitlist']],
+    ['قادمة ومؤكدة',['confirmed','ready']],
+    ['جارية',['ongoing']],
+    ['منتهية',['completed','canceled','rejected','expired','no_show']]
+  ];
+  el('acc-box').innerHTML=
+    '<div class="box" style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">'+
+      '<span style="width:52px;height:52px;border-radius:50%;background:var(--p);color:#fff;display:grid;'+
+      'place-items:center;font-weight:900;font-size:21px">'+esc(String(c.full_name).charAt(0))+'</span>'+
+      '<div><b style="font-size:19px">'+esc(c.full_name)+'</b>'+
+      '<div style="color:var(--mut);font-size:13px;font-weight:600">'+esc(c.phone)+
+      (c.phone_verified?' <span class="tag ok">موثق</span>':' <span class="tag w">غير موثق</span>')+'</div></div>'+
+      '<div class="sp"></div>'+
+      '<div style="text-align:center"><b style="font-size:20px;color:var(--p)">'+c.bookings_count+'</b>'+
+      '<div style="font-size:11.5px;color:var(--mut);font-weight:700">حجز</div></div>'+
+      (c.outstanding?'<div style="text-align:center"><b style="font-size:20px;color:var(--err)">'+money(c.outstanding)+'</b>'+
+      '<div style="font-size:11.5px;color:var(--mut);font-weight:700">مستحق</div></div>':'')+
+      '<button class="btn btn-g btn-sm" onclick="logoutCust()">خروج</button>'+
+    '</div>'+
+    (c.outstanding?'<div class="msg err">عليك مبالغ مستحقة '+money(c.outstanding)+
+      ' — لازم تسددها قبل أي حجز جديد. تواصل مع الفرع.</div>':'')+
+    (c.docs_status!=='complete'?'<div class="msg info">حالة مستنداتك: '+
+      ({incomplete:'ناقصة',pending_review:'تحت المراجعة',expired:'منتهية'}[c.docs_status]||c.docs_status)+
+      ' — الفرع هيتواصل معك لو احتاج مستند.</div>':'')+
+    groups.map(function(g){
+      var list=bks.filter(function(b){ return g[1].indexOf(b.status)!==-1; });
+      if(!list.length) return '';
+      return '<div class="sh" style="margin-top:22px"><div><h2 style="font-size:20px">'+g[0]+
+        ' <span class="tag">'+list.length+'</span></h2></div></div>'+list.map(bkCard).join('');
+    }).join('')+
+    (bks.length?'':'<div class="empty" style="margin-top:20px"><b>مفيش حجوزات بعد</b>'+
+      '<button class="btn btn-p" style="margin-top:12px" onclick="go(\'#/\')">ابحث عن سيارة</button></div>');
+}
+
+function bkCard(b){
+  var acts=[];
+  if(b.status==='price_changed') acts.push(
+    '<button class="btn btn-p btn-sm" onclick="priceDecide(\''+b.booking_id+'\',true)">موافق على السعر الجديد</button>',
+    '<button class="btn btn-r btn-sm" onclick="priceDecide(\''+b.booking_id+'\',false)">إلغاء الحجز</button>');
+  if(b.status==='awaiting_payment') acts.push(
+    '<button class="btn btn-p btn-sm" onclick="payModal(\''+b.booking_id+'\','+b.payable_now+')">سدّد '+money(b.payable_now)+'</button>');
+  if(b.status==='ongoing') acts.push(
+    '<button class="btn btn-o btn-sm" onclick="extModal(\''+b.booking_id+'\')">طلب تمديد</button>');
+  if(['waitlist','pending_review','awaiting_payment','payment_review','confirmed','ready','price_changed'].indexOf(b.status)!==-1)
+    acts.push('<button class="btn btn-r btn-sm" onclick="cancelModal(\''+b.booking_id+'\')">إلغاء</button>');
+  if(b.invoice_no) acts.push('<span class="tag b">فاتورة '+esc(b.invoice_no)+'</span>');
+
+  return '<div class="bk">'+
+    '<div class="hd">'+
+      '<div class="im"><img src="'+esc(b.car_image||ph())+'" alt=""></div>'+
+      '<div><b style="font-size:16px">'+esc(b.car_name||b.category_name)+'</b>'+
+      '<div style="color:var(--mut);font-size:12.5px;font-weight:600">'+esc(b.booking_id)+
+      (b.plate_no?(' · لوحة '+esc(b.plate_no)):'')+'</div></div>'+
+      '<div class="sp"></div>'+statusTag(b.status)+
+    '</div>'+
+    (b.status==='price_changed'?'<div style="padding:0 16px"><div class="msg w" style="background:#fdf2e0;color:#8a5f00">'+
+      'الفرع عدّل الإجمالي من '+money(b.grand_total_original)+' إلى <b>'+money(b.grand_total)+'</b>. '+
+      'السبب: '+esc(b.price_change_reason||'—')+'</div></div>':'')+
+    (b.extension_request==='pending'?'<div style="padding:0 16px"><div class="msg info">'+
+      'طلب تمديد '+b.extension_days+' يوم بانتظار موافقة الفرع · الفرق '+money(b.extension_amount)+'</div></div>':'')+
+    (b.cancel_reason?'<div style="padding:0 16px"><div class="msg err">'+esc(b.cancel_reason)+
+      (b.refund_amount?(' · المسترد '+money(b.refund_amount)):'')+'</div></div>':'')+
+    '<div class="bd">'+
+      '<div><span>الاستلام</span><b>'+esc(b.pickup_at)+'</b>'+esc(b.pickup_branch)+'</div>'+
+      '<div><span>التسليم</span><b>'+esc(b.dropoff_at)+'</b>'+esc(b.dropoff_branch)+'</div>'+
+      '<div><span>المدة والكيلومترات</span><b>'+b.days+' يوم</b>'+(b.km_allowance?(b.km_allowance+' كم'):'غير محدود')+'</div>'+
+      '<div><span>الإجمالي</span><b style="color:var(--p);font-size:16px">'+money(b.grand_total,true)+'</b>'+
+        (b.remaining?('متبقي '+money(b.remaining,true)):'مدفوع')+'</div>'+
+    '</div>'+
+    (acts.length?'<div class="ft">'+acts.join('')+'</div>':'')+
+  '</div>';
+}
+
+function priceDecide(id,ok){
+  apiPost('approve_price',{session:CSESS,booking_id:id,approve:ok}).then(function(r){
+    toast(ok?'تمت الموافقة':'تم الإلغاء'); loadAccount();
+  }).catch(function(e){ toast(e.message,true); });
+}
+
+function cancelModal(id){
+  openModal('إلغاء الحجز '+id,
+    '<div class="msg info">الأمانة تُرد كاملة. أي غرامة إلغاء تُحسب من الإيجار حسب سياسة السيارة.</div>'+
+    '<div class="f"><span class="lbl">السبب (اختياري)</span><input id="cx-r"></div>',
+    '<div class="sp"></div><button class="btn btn-g" onclick="closeModal()">تراجع</button>'+
+    '<button class="btn btn-r" id="cx-go">تأكيد الإلغاء</button>');
+  el('cx-go').onclick=function(){
+    apiPost('cancel_booking',{session:CSESS,booking_id:id,reason:el('cx-r').value}).then(function(r){
+      closeModal();
+      toast('تم الإلغاء'+(r.cancel_fee?(' · غرامة '+money(r.cancel_fee)):'')+
+        (r.refund_amount?(' · مسترد '+money(r.refund_amount)):''));
+      loadAccount();
+    }).catch(function(e){ mmsg(e.message); });
+  };
+}
+
+function extModal(id){
+  openModal('طلب تمديد '+id,
+    '<div class="f"><span class="lbl">عدد أيام التمديد</span><input id="ex-d" type="number" value="2" min="1"></div>'+
+    '<div class="msg info" style="margin-top:12px">النظام يتحقق من توفر السيارة ويحسب الفرق، والفرع يعتمد الطلب.</div>',
+    '<div class="sp"></div><button class="btn btn-g" onclick="closeModal()">إلغاء</button>'+
+    '<button class="btn btn-p" id="ex-go">إرسال الطلب</button>');
+  el('ex-go').onclick=function(){
+    apiPost('request_extension',{session:CSESS,booking_id:id,days:el('ex-d').value}).then(function(r){
+      closeModal(); toast('الطلب أُرسل · الفرق '+money(r.amount)); loadAccount();
+    }).catch(function(e){ mmsg(e.message); });
+  };
+}
+
+function payModal(id,amount){
+  var banks=(HOME&&HOME.banks)||[];
+  openModal('سداد '+money(amount),
+    '<div class="msg info">حوّل المبلغ على أحد الحسابات التالية واكتب رقم الحجز <b>'+esc(id)+
+    '</b> في خانة المرجع، ثم أرسل رقم الإيصال.</div>'+
+    banks.map(function(b){
+      return '<div class="box" style="padding:13px 15px;margin-bottom:9px">'+
+        '<b>'+esc(b.bank_name)+'</b>'+
+        '<div class="kv"><span>اسم الحساب</span><b>'+esc(b.account_name)+'</b></div>'+
+        '<div class="kv"><span>الآيبان</span><b style="direction:ltr;font-size:12.5px">'+esc(b.iban)+'</b></div></div>';
+    }).join('')+
+    '<div class="f"><span class="lbl">رقم مرجع التحويل</span><input id="pz-ref"></div>',
+    '<div class="sp"></div><button class="btn btn-g" onclick="closeModal()">إغلاق</button>'+
+    '<button class="btn btn-p" id="pz-go">أرسلت التحويل</button>');
+  el('pz-go').onclick=function(){
+    apiPost('submit_receipt',{session:CSESS,booking_id:id,reference_no:el('pz-ref').value}).then(function(){
+      closeModal(); toast('تم إرسال الإيصال للمراجعة'); loadAccount();
+    }).catch(function(e){ mmsg(e.message); });
+  };
+}
+</script>
+<script>
+/* ===========================================================
    لوحة التحكم
    =========================================================== */
+var AVIEW='bookings', BFILTER='';
 
-function showAdmin(){
-  el('site').hidden=true; el('admin').hidden=false;
-  SESSION = sessionStorage.getItem('darbak_session');
-  if(SESSION){
-    apiGet('admin_me',{session:SESSION}).then(function(me){ ME=me; openPanel(); })
-      .catch(function(){ SESSION=null; sessionStorage.removeItem('darbak_session'); showLogin(); });
-  } else showLogin();
+function adminBind(){
+  el('l-btn').addEventListener('click', doAdminLogin);
+  el('l-pass').addEventListener('keydown', function(e){ if(e.key==='Enter') doAdminLogin(); });
+  el('a-out').addEventListener('click', function(){
+    apiPost('admin_logout',{session:ESESS}).catch(function(){});
+    ESESS=null; ME=null; sessionStorage.removeItem('darbak_e'); go('#/'); toast('تم الخروج');
+  });
 }
-function showSite(){ el('admin').hidden=true; el('site').hidden=false; }
 
-function showLogin(){
+function adminEnter(){
+  if(ESESS){
+    apiGet('admin_me',{session:ESESS}).then(function(me){ ME=me; adminPanel(); })
+      .catch(function(){ ESESS=null; sessionStorage.removeItem('darbak_e'); adminLogin(); });
+  } else adminLogin();
+}
+
+function adminLogin(){
   el('a-login').hidden=false; el('a-panel').hidden=true;
   if(!READY){ lmsg('الرابط أو التوكن غير مضبوط في أول ملف index.html','err'); return; }
   apiGet('ping').then(function(p){
     if(!p.ready){ lmsg(p.message,'err'); return; }
     if(!p.has_employees){
       el('l-title').textContent='إنشاء حساب المدير';
-      el('l-sub').textContent='أول مرة — أنشئ حسابك لتبدأ إدخال البيانات.';
+      el('l-sub').textContent='أول مرة — أنشئ حسابك لتبدأ.';
       el('l-name-f').hidden=false; el('l-btn').textContent='إنشاء الحساب';
       el('l-btn').dataset.mode='bootstrap';
-      lmsg('اختر اسم دخول وكلمة مرور قوية (٦ أحرف على الأقل). هذا الحساب هو مدير النظام.','info');
+      lmsg('اختر اسم دخول وكلمة مرور ٦ أحرف على الأقل.','info');
     } else {
-      el('l-title').textContent='تسجيل دخول الموظفين';
-      el('l-sub').textContent='ادخل باسم الدخول وكلمة المرور.';
+      el('l-title').textContent='دخول الموظفين';
+      el('l-sub').textContent='اسم الدخول وكلمة المرور.';
       el('l-name-f').hidden=true; el('l-btn').textContent='دخول';
-      el('l-btn').dataset.mode='login'; lmsg('');
+      el('l-btn').dataset.mode='login';
+      lmsg('حساب تجريبي: <b>admin</b> / <b>Darbak@123</b>','info');
     }
   }).catch(function(e){ lmsg(e.message,'err'); });
 }
-function lmsg(t,k){ el('l-msg').innerHTML = t?('<div class="msg '+(k||'info')+'">'+esc(t)+'</div>'):''; }
+function lmsg(t,k){ el('l-msg').innerHTML=t?('<div class="msg '+(k||'info')+'">'+t+'</div>'):''; }
 
-function doLogin(){
+function doAdminLogin(){
   var mode=el('l-btn').dataset.mode||'login';
   var p={ code:el('l-code').value.trim(), password:el('l-pass').value };
   if(!p.code||!p.password) return lmsg('اكتب اسم الدخول وكلمة المرور','err');
   if(mode==='bootstrap') p.full_name=el('l-name').value.trim();
-  el('l-btn').disabled=true; el('l-btn').textContent='جاري…';
-  apiPost(mode==='bootstrap'?'admin_bootstrap':'admin_login', p).then(function(d){
-    SESSION=d.session; ME=d.employee;
-    sessionStorage.setItem('darbak_session', SESSION);
-    el('l-pass').value='';
-    openPanel();
-  }).catch(function(e){
-    lmsg(e.message,'err');
-  }).then(function(){
-    el('l-btn').disabled=false;
-    el('l-btn').textContent=(el('l-btn').dataset.mode==='bootstrap')?'إنشاء الحساب':'دخول';
-  });
+  el('l-btn').disabled=true; el('l-btn').textContent='...';
+  apiPost(mode==='bootstrap'?'admin_bootstrap':'admin_login',p).then(function(d){
+    ESESS=d.session; ME=d.employee; sessionStorage.setItem('darbak_e',ESESS);
+    el('l-pass').value=''; adminPanel();
+  }).catch(function(e){ lmsg(e.message,'err'); })
+    .then(function(){ el('l-btn').disabled=false;
+      el('l-btn').textContent=(el('l-btn').dataset.mode==='bootstrap')?'إنشاء الحساب':'دخول'; });
 }
 
-function openPanel(){
+function adminPanel(){
   el('a-login').hidden=true; el('a-panel').hidden=false;
-  el('a-who').textContent=(ME.name||ME.full_name||'')+' · '+(ME.role==='admin'?'مدير':ME.role==='manager'?'مشرف':'موظف');
-  apiGet('admin_schema',{session:SESSION}).then(function(s){
-    SCHEMA=s;
-    el('a-menu').innerHTML=s.order.map(function(t){
-      return '<a data-tab="'+t+'" onclick="loadTab(\''+t+'\')">'+esc(s.tabs[t].label)+'</a>';
-    }).join('');
-    loadStats(); loadTab('Cars');
+  el('a-who').textContent=(ME.name||ME.full_name||'')+' · '+
+    ({admin:'مدير',manager:'مشرف',staff:'موظف'}[ME.role]||'');
+  if(SCH){ adminMenu(); adminKpis(); adminGo(AVIEW); return; }
+  apiGet('admin_schema',{session:ESESS}).then(function(s){
+    SCH=s; adminMenu(); adminKpis(); adminGo('bookings');
   }).catch(function(e){ toast(e.message,true); });
 }
 
-function loadStats(){
-  apiGet('admin_stats',{session:SESSION}).then(function(s){
-    CUR=s.currency||'ر.س';
-    var c=[['السيارات',s.cars_total],['متاحة',s.cars_available],['مؤجرة',s.cars_rented],
-           ['في الصيانة',s.cars_maintenance],['الحجوزات',s.bookings_total],
-           ['بانتظار التأكيد',s.bookings_pending],['العملاء',s.customers],
-           ['المحصّل',money(s.paid_total)]];
-    el('a-cards').innerHTML=c.map(function(x){
-      return '<div class="card"><b>'+(typeof x[1]==='number'?x[1].toLocaleString('ar-SA'):x[1])+'</b><small>'+x[0]+'</small></div>';
+function adminMenu(){
+  var quick=[['bookings','📋 الحجوزات'],['ops','🔑 التسليم والاستلام'],['settings','⚙️ الإعدادات']];
+  el('a-menu').innerHTML=
+    quick.map(function(q){
+      return '<a data-v="'+q[0]+'" onclick="adminGo(\''+q[0]+'\')">'+q[1]+'</a>'; }).join('')+
+    '<hr>'+
+    SCH.order.map(function(t){
+      return '<a data-v="tab:'+t+'" onclick="adminGo(\'tab:'+t+'\')">'+esc(SCH.tabs[t].label)+'</a>'; }).join('');
+}
+
+function adminGo(v){
+  AVIEW=v;
+  document.querySelectorAll('#a-menu a').forEach(function(a){ a.classList.toggle('on',a.dataset.v===v); });
+  if(v==='bookings') viewBookings();
+  else if(v==='ops') viewOps();
+  else if(v==='settings') viewSettings();
+  else if(v.indexOf('tab:')===0) viewTable(v.slice(4));
+}
+
+function adminKpis(){
+  apiGet('admin_stats',{session:ESESS}).then(function(s){
+    CUR=s.currency||CUR;
+    var k=[
+      ['بانتظار الاعتماد',s.pending_review,'warn'],['بانتظار الدفع',s.awaiting_payment,'warn'],
+      ['طلبات انتظار',s.waitlist,'warn'],['مؤكدة',s.confirmed,''],['جاهزة',s.ready,''],
+      ['جاري الإيجار',s.ongoing,''],['استلام اليوم',s.pickups_today,''],['تسليم اليوم',s.returns_today,''],
+      ['سيارات متاحة',s.cars_available,''],['مؤجرة',s.cars_rented,''],['صيانة',s.cars_maintenance,''],
+      ['مستندات للمراجعة',s.docs_pending,'warn'],['طلبات استرداد',s.refunds_pending,'warn'],
+      ['المحصّل',money(s.paid_total),''],['متبقي',money(s.remaining_total),'warn'],
+      ['مخالفات غير مسددة',money(s.unpaid_charges),'warn']
+    ];
+    el('a-kpis').innerHTML=k.map(function(x){
+      return '<div class="kpi'+(x[2]&&num(x[1])?' '+x[2]:'')+'"><b>'+
+        (typeof x[1]==='number'?x[1].toLocaleString('ar-SA'):x[1])+'</b><small>'+x[0]+'</small></div>';
     }).join('');
   }).catch(function(){});
 }
 
-function loadTab(tab){
+/* ---------- الحجوزات ---------- */
+function viewBookings(){
+  var fl=[['','الكل'],['pending_review','بانتظار الاعتماد'],['price_changed','تعديل سعر'],
+    ['awaiting_payment','بانتظار الدفع'],['payment_review','إيصال للمراجعة'],['confirmed','مؤكد'],
+    ['ready','جاهز'],['ongoing','جاري'],['waitlist','انتظار'],['completed','مكتمل'],['canceled','ملغي']];
+  el('a-view').innerHTML='<div class="box" style="padding:0">'+
+    '<div class="ptool"><b style="font-size:16px">الحجوزات</b>'+
+      '<div class="sp"></div><input type="search" id="bq" placeholder="بحث برقم الحجز أو الاسم أو الجوال…">'+
+      '<button class="btn btn-sm btn-g" onclick="viewBookings()">تحديث</button></div>'+
+    '<div class="ptool" style="border-top:0;padding-top:0">'+fl.map(function(f){
+      return '<span class="pill'+(BFILTER===f[0]?' on':'')+'" onclick="BFILTER=\''+f[0]+'\';viewBookings()">'+f[1]+'</span>';
+    }).join('')+'</div>'+
+    '<div class="tblwrap" id="bk-tbl"><div class="skel" style="height:200px"></div></div></div>';
+  el('bq').addEventListener('keydown',function(e){ if(e.key==='Enter') viewBookings(); });
+
+  apiGet('admin_list',{session:ESESS,tab:'Bookings',status:BFILTER,q:(el('bq')||{}).value||'',per:100})
+    .then(function(d){
+      if(!d.rows.length){ el('bk-tbl').innerHTML='<div class="empty" style="border:0">لا توجد حجوزات</div>'; return; }
+      el('bk-tbl').innerHTML='<table><thead><tr>'+
+        ['رقم','العميل','الجوال','الفئة','الاستلام','التسليم','الإجمالي','مدفوع','الحالة',''].map(function(h){
+          return '<th>'+h+'</th>'; }).join('')+'</tr></thead><tbody>'+
+        d.rows.map(function(b){
+          return '<tr><td><b>'+esc(b.booking_id)+'</b></td><td>'+esc(b.customer_name)+'</td>'+
+            '<td style="direction:ltr">'+esc(b.customer_phone)+'</td><td>'+esc(b.category_id)+'</td>'+
+            '<td>'+esc(String(b.pickup_at).slice(0,16))+'</td><td>'+esc(String(b.dropoff_at).slice(0,16))+'</td>'+
+            '<td>'+money(b.grand_total)+'</td><td>'+money(b.paid)+'</td>'+
+            '<td>'+statusTag(b.status)+'</td>'+
+            '<td><button class="btn btn-sm btn-p" onclick="openBooking(\''+esc(b.booking_id)+'\')">فتح</button></td></tr>';
+        }).join('')+'</tbody></table>';
+    }).catch(function(e){ el('bk-tbl').innerHTML='<div class="empty" style="border:0">'+esc(e.message)+'</div>'; });
+}
+
+function openBooking(id){
+  openModal('الحجز '+id,'<div class="skel" style="height:240px"></div>','');
+  apiGet('admin_booking',{session:ESESS,booking_id:id}).then(function(d){
+    var b=d.booking, ch=d.checks||[], blocks=ch.filter(function(x){ return x.level==='block'&&!x.pass; });
+    var warns=ch.filter(function(x){ return x.level==='warn'&&!x.pass; });
+    var ex=b.extras_json?JSON.parse(b.extras_json):[];
+
+    el('m-body').innerHTML=
+      '<div style="display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap">'+
+        statusTag(b.status)+'<b style="font-size:17px">'+esc(b.customer_name)+'</b>'+
+        '<span style="direction:ltr;color:var(--mut);font-weight:700">'+esc(b.customer_phone)+'</span>'+
+        '<div class="sp"></div>'+
+        (d.customer?('<span class="tag '+(d.customer.docs_status==='complete'?'ok':'no')+'">مستندات: '+
+          ({complete:'مكتملة',incomplete:'ناقصة',pending_review:'مراجعة',expired:'منتهية'}[d.customer.docs_status]||'')+'</span>'):'')+
+      '</div>'+
+      (blocks.length?'<div class="msg err"><b>فحوص مانعة للاعتماد:</b><br>'+
+        blocks.map(function(x){ return '• '+esc(x.message); }).join('<br>')+'</div>':
+        '<div class="msg ok">كل الفحوص سليمة — المستندات مكتملة وسارية لنهاية الإيجار.</div>')+
+      (warns.length?'<div class="msg info">تحذيرات: '+warns.map(function(x){ return esc(x.message); }).join(' · ')+'</div>':'')+
+      '<div class="form2">'+
+        '<div><div class="kv"><span>الفئة</span><b>'+esc(d.category?d.category.name:b.category_id)+'</b></div>'+
+        '<div class="kv"><span>الاستلام</span><b>'+esc(String(b.pickup_at).slice(0,16))+'</b></div>'+
+        '<div class="kv"><span>التسليم</span><b>'+esc(String(b.dropoff_at).slice(0,16))+'</b></div>'+
+        '<div class="kv"><span>المدة</span><b>'+num(b.days)+' يوم · '+num(b.km_allowance)+' كم</b></div>'+
+        (b.delivery_address?'<div class="kv"><span>عنوان التوصيل</span><b>'+esc(b.delivery_address)+'</b></div>':'')+
+        (b.car_id?'<div class="kv"><span>السيارة المخصصة</span><b>'+esc(b.car_id)+'</b></div>':
+          '<div class="kv"><span>السيارة المعروضة</span><b>'+esc(b.display_car_id||'—')+'</b></div>')+
+        '</div>'+
+        '<div><div class="kv"><span>الإيجار</span><b>'+money(b.rent_total)+'</b></div>'+
+        (num(b.duration_discount)?'<div class="kv"><span>خصم المدة</span><b style="color:var(--ok)">− '+money(b.duration_discount)+'</b></div>':'')+
+        (ex.length?'<div class="kv"><span>الإضافات</span><b>'+money(b.extras_total)+'</b></div>':'')+
+        '<div class="kv"><span>توصيل (استرشادي / معتمد)</span><b>'+money(b.delivery_fee_suggested)+' / '+money(b.delivery_fee)+'</b></div>'+
+        (num(b.oneway_fee)?'<div class="kv"><span>بين المدن</span><b>'+money(b.oneway_fee)+'</b></div>':'')+
+        (num(b.coupon_discount)?'<div class="kv"><span>كوبون '+esc(b.coupon_code)+'</span><b style="color:var(--ok)">− '+money(b.coupon_discount)+'</b></div>':'')+
+        '<div class="kv"><span>الضريبة</span><b>'+money(b.vat,true)+'</b></div>'+
+        '<div class="kv tot"><span>الإجمالي</span><b>'+money(b.grand_total,true)+'</b></div>'+
+        '<div class="kv"><span>أمانة</span><b>'+money(b.deposit)+'</b></div>'+
+        '<div class="kv"><span>مطلوب / مدفوع / متبقي</span><b>'+money(b.payable_now)+' / '+money(b.paid)+' / '+money(b.remaining)+'</b></div>'+
+        '</div>'+
+      '</div>'+
+      (ex.length?'<h4 style="margin:14px 0 8px">الإضافات</h4><div class="chips">'+ex.map(function(e){
+        return '<span class="chip">'+esc(e.name)+(e.qty>1?(' ×'+e.qty):'')+' — '+money(e.line)+'</span>'; }).join('')+'</div>':'')+
+
+      (d.payments&&d.payments.length?'<h4 style="margin:16px 0 8px">المدفوعات</h4>'+d.payments.map(function(p){
+        return '<div class="kv"><span>'+esc(p.payment_id)+' · '+
+          ({rent:'إيجار',deposit:'أمانة',refund:'استرداد',fine:'غرامة',extension:'تمديد'}[p.type]||p.type)+
+          ' · '+esc(p.method)+'</span><b>'+money(p.amount)+' '+
+          ({paid:'<span class="tag ok">مدفوع</span>',pending:'<span class="tag w">معلّق</span>',
+            rejected:'<span class="tag no">مرفوض</span>',refunded:'<span class="tag b">مسترد</span>'}[p.status]||p.status)+
+          (p.status==='pending'&&p.type==='rent'?
+            ' <button class="btn btn-sm btn-p" onclick="verifyPay(\''+esc(p.payment_id)+'\',true)">تحقق</button>'+
+            ' <button class="btn btn-sm btn-r" onclick="verifyPay(\''+esc(p.payment_id)+'\',false)">رفض</button>':'')+
+          '</b></div>';
+      }).join(''):'')+
+
+      (b.status==='pending_review'||b.status==='waitlist'?
+        '<h4 style="margin:16px 0 8px">الاعتماد</h4>'+
+        '<div class="form2"><div class="f"><span class="lbl">رسوم التوصيل المعتمدة</span>'+
+        '<input id="ap-fee" type="number" value="'+num(b.delivery_fee)+'"></div>'+
+        '<div class="f"><span class="lbl">سبب التعديل (لو غيّرت الرسم)</span><input id="ap-reason"></div></div>'+
+        '<div class="msg info" style="margin-top:10px">أي زيادة في الإجمالي تحوّل الحجز لحالة «بانتظار موافقة العميل» تلقائيًا.</div>'
+        :'')+
+
+      (b.status==='confirmed'||b.status==='ready'?
+        '<h4 style="margin:16px 0 8px">تخصيص السيارة</h4>'+
+        '<div class="photos" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))">'+
+        (d.pool||[]).map(function(c){
+          return '<div class="ph'+(b.car_id===c.car_id?' on':'')+'" style="aspect-ratio:auto;padding:8px" '+
+            'onclick="assignCar(\''+esc(b.booking_id)+'\',\''+esc(c.car_id)+'\')">'+
+            '<div><img src="'+esc(c.image||ph())+'" style="width:100%;height:58px;object-fit:cover;border-radius:7px">'+
+            '<b style="display:block;font-size:12px;margin-top:4px">'+esc(c.name)+'</b>'+
+            '<small style="font-size:10.5px">'+esc(c.plate_no)+' · '+esc(c.branch_id)+'</small></div></div>';
+        }).join('')+'</div>'
+        :'');
+
+    var acts=['<div class="sp"></div>'];
+    if(b.status==='pending_review'||b.status==='waitlist'){
+      acts.push('<button class="btn btn-r btn-sm" onclick="rejectBooking(\''+id+'\')">رفض</button>');
+      acts.push('<button class="btn btn-p" onclick="approveBooking(\''+id+'\')">اعتماد الحجز</button>');
+    }
+    if(b.status==='ready') acts.push('<button class="btn btn-p" onclick="handoverForm(\''+id+'\',\'out\')">شاشة التسليم</button>');
+    if(b.status==='ongoing'){
+      if(b.extension_request==='pending'){
+        acts.push('<button class="btn btn-g btn-sm" onclick="decideExt(\''+id+'\',false)">رفض التمديد</button>');
+        acts.push('<button class="btn btn-a btn-sm" onclick="decideExt(\''+id+'\',true)">قبول التمديد ('+num(b.extension_days)+' يوم)</button>');
+      }
+      acts.push('<button class="btn btn-p" onclick="handoverForm(\''+id+'\',\'in\')">شاشة الاستلام</button>');
+    }
+    if(b.status==='completed') acts.push('<button class="btn btn-o btn-sm" onclick="chargeForm(\''+id+'\')">تسجيل مخالفة</button>');
+    acts.push('<button class="btn btn-g" onclick="closeModal()">إغلاق</button>');
+    el('m-foot').innerHTML=acts.join('');
+  }).catch(function(e){ el('m-body').innerHTML='<div class="msg err">'+esc(e.message)+'</div>'; });
+}
+
+function approveBooking(id){
+  var fee=el('ap-fee')?el('ap-fee').value:'';
+  var reason=el('ap-reason')?el('ap-reason').value:'';
+  apiPost('admin_approve',{session:ESESS,booking_id:id,delivery_fee:fee,reason:reason}).then(function(r){
+    closeModal();
+    toast(r.needs_customer_approval
+      ? 'الإجمالي زاد — الحجز بانتظار موافقة العميل'
+      : ('تم الاعتماد · الحالة '+(ST[r.status]?ST[r.status][0]:r.status)));
+    viewBookings(); adminKpis();
+  }).catch(function(e){ mmsg(e.message); });
+}
+function rejectBooking(id){
+  var r=prompt('سبب الرفض:');
+  if(!r) return;
+  apiPost('admin_reject',{session:ESESS,booking_id:id,reason:r}).then(function(x){
+    closeModal(); toast('تم الرفض'+(x.refund_amount?(' · استرداد '+money(x.refund_amount)):''));
+    viewBookings(); adminKpis();
+  }).catch(function(e){ mmsg(e.message); });
+}
+function verifyPay(pid,ok){
+  var ref=ok?prompt('رقم مرجع التحويل:'):prompt('سبب الرفض:');
+  if(ok&&ref===null) return;
+  apiPost('admin_verify_payment',{session:ESESS,payment_id:pid,approve:ok,
+    reference_no:ok?ref:'',reason:ok?'':ref}).then(function(){
+    closeModal(); toast(ok?'تم تأكيد الدفع':'تم رفض الإيصال'); viewBookings(); adminKpis();
+  }).catch(function(e){ mmsg(e.message); });
+}
+function assignCar(bid,cid){
+  apiPost('admin_assign_car',{session:ESESS,booking_id:bid,car_id:cid}).then(function(){
+    toast('تم التخصيص — الحجز جاهز للاستلام'); openBooking(bid); adminKpis();
+  }).catch(function(e){ mmsg(e.message); });
+}
+function decideExt(id,ok){
+  apiPost('admin_decide_extension',{session:ESESS,booking_id:id,approve:ok}).then(function(r){
+    closeModal(); toast(ok?('تم التمديد حتى '+r.new_dropoff):'تم رفض التمديد'); viewBookings();
+  }).catch(function(e){ mmsg(e.message); });
+}
+
+/* ---------- التسليم والاستلام ---------- */
+function viewOps(){
+  el('a-view').innerHTML='<div class="box" style="padding:0">'+
+    '<div class="ptool"><b style="font-size:16px">عمليات اليوم</b><div class="sp"></div>'+
+    '<button class="btn btn-sm btn-g" onclick="viewOps()">تحديث</button></div>'+
+    '<div id="ops-body" style="padding:16px"><div class="skel" style="height:160px"></div></div></div>';
+  apiGet('admin_list',{session:ESESS,tab:'Bookings',per:200}).then(function(d){
+    var out=d.rows.filter(function(b){ return ['ready','ongoing'].indexOf(b.status)!==-1; });
+    if(!out.length){ el('ops-body').innerHTML='<div class="empty" style="border:0">مفيش عمليات تسليم أو استلام حاليًا</div>'; return; }
+    el('ops-body').innerHTML=out.map(function(b){
+      var isOut=b.status==='ready';
+      return '<div class="bk" style="margin-bottom:11px"><div class="hd">'+
+        '<div><b>'+esc(b.booking_id)+' · '+esc(b.customer_name)+'</b>'+
+        '<div style="color:var(--mut);font-size:12.5px;font-weight:600">'+
+        esc(String(isOut?b.pickup_at:b.dropoff_at).slice(0,16))+' · '+esc(b.car_id||b.display_car_id||'')+'</div></div>'+
+        '<div class="sp"></div>'+statusTag(b.status)+
+        '<button class="btn btn-sm btn-p" onclick="handoverForm(\''+esc(b.booking_id)+'\',\''+(isOut?'out':'in')+'\')">'+
+        (isOut?'تسليم':'استلام')+'</button></div></div>';
+    }).join('');
+  }).catch(function(e){ el('ops-body').innerHTML='<div class="empty" style="border:0">'+esc(e.message)+'</div>'; });
+}
+
+var PHOTOS=['أمامية','خلفية','الجانب الأيمن','الجانب الأيسر','العداد والوقود','الداخل'];
+var PHSTATE={};
+
+function handoverForm(id,type){
+  PHSTATE={};
+  openModal((type==='out'?'تسليم السيارة — ':'استلام السيارة — ')+id,
+    '<div class="msg info">'+(type==='out'
+      ? 'الزر معطّل حتى ترفع الصور الستة وتوقّع. العداد والوقود يُثبّتان كنقطة البداية.'
+      : 'ارفع الصور الستة مرة أخرى — المقارنة بينها وبين صور التسليم هي إثبات أي ضرر جديد.')+'</div>'+
+    '<div class="form2">'+
+      '<div class="f"><span class="lbl">قراءة العداد</span><input id="h-odo" type="number"></div>'+
+      '<div class="f"><span class="lbl">مستوى الوقود (١–٨)</span><select id="h-fuel">'+
+        [1,2,3,4,5,6,7,8].map(function(n){ return '<option value="'+n+'"'+(n===8?' selected':'')+'>'+n+'/8</option>'; }).join('')+
+        '</select></div>'+
+      '<div class="f"><span class="lbl">حالة النظافة</span><select id="h-clean">'+
+        '<option value="clean">نظيفة</option><option value="fair">متوسطة</option>'+
+        '<option value="dirty">تحتاج تنظيف</option></select></div>'+
+      (type==='in'?'<div class="f"><span class="lbl">مخالفات مرورية (مبلغ)</span><input id="h-fines" type="number" value="0"></div>'
+        :'<div class="f"><span class="lbl">تحصيل الأمانة</span><select id="h-dep">'+
+         '<option value="mada_branch">شبكة</option><option value="cash">نقدًا</option></select></div>')+
+      '<div class="f full"><span class="lbl">الملحقات الموجودة</span>'+
+        '<div class="chips" id="h-acc">'+['إطار احتياطي','طفاية','عدة','شاحن','مثلث عاكس'].map(function(a,i){
+          return '<span class="chip" style="cursor:pointer" data-acc="'+esc(a)+'" onclick="tglAcc(this)">'+esc(a)+'</span>'; }).join('')+
+        '</div></div>'+
+      '<div class="f full"><span class="lbl">الأضرار — اسم الضرر والتكلفة (سطر لكل ضرر: وصف | مبلغ)</span>'+
+        '<textarea id="h-dmg" placeholder="خدش في الصدام الخلفي | 250"></textarea></div>'+
+      '<div class="f full"><span class="lbl">الصور الإجبارية (٦)</span>'+
+        '<div class="photos">'+PHOTOS.map(function(p,i){
+          return '<div class="ph" id="ph-'+i+'" onclick="pickPhoto('+i+')">'+esc(p)+'</div>'; }).join('')+
+        '</div><input type="file" id="ph-file" accept="image/*" hidden>'+
+        '<small style="color:var(--mut);font-size:11.5px;display:block;margin-top:6px">'+
+        'في هذه النسخة تُسجَّل أسماء الصور فقط. رفع الصور لـGoogle Drive خطوة تالية.</small></div>'+
+      '<div class="f full"><span class="lbl">توقيع العميل</span>'+
+        '<canvas id="sig" class="sig"></canvas>'+
+        '<div style="display:flex;gap:8px;margin-top:7px"><button class="btn btn-g btn-sm" onclick="clearSig()">مسح التوقيع</button>'+
+        '<span style="color:var(--mut);font-size:11.5px;align-self:center">وقّع بإصبعك أو بالماوس</span></div></div>'+
+      (type==='out'?'<div class="f full"><label style="display:flex;gap:8px;align-items:center;font-weight:700">'+
+        '<input type="checkbox" id="h-id" style="width:18px;height:18px;accent-color:var(--p)">'+
+        'تم التحقق من الهوية ورخصة القيادة ومطابقتها بالأصل</label></div>':'')+
+      '<div class="f full"><span class="lbl">ملاحظات</span><input id="h-notes"></div>'+
+    '</div>',
+    '<div class="sp"></div><button class="btn btn-g" onclick="closeModal()">إلغاء</button>'+
+    '<button class="btn btn-p" id="h-go">'+(type==='out'?'إتمام التسليم':'إتمام الاستلام والتسوية')+'</button>');
+
+  initSig();
+  el('ph-file').addEventListener('change', function(){
+    var i=this.dataset.idx;
+    if(this.files&&this.files[0]){
+      PHSTATE[i]=this.files[0].name||('photo-'+i+'.jpg');
+      var n=el('ph-'+i); n.classList.add('on'); n.textContent=PHOTOS[i]+' ✓';
+    }
+    this.value='';
+  });
+  el('h-go').onclick=function(){ submitHandover(id,type); };
+}
+function pickPhoto(i){ var f=el('ph-file'); f.dataset.idx=i; f.click(); }
+function tglAcc(n){ n.classList.toggle('on');
+  n.style.background=n.classList.contains('on')?'var(--p-l)':'#f2f7f5';
+  n.style.borderColor=n.classList.contains('on')?'var(--p)':'var(--line)'; }
+
+var SIGCTX=null, SIGDRAWN=false;
+function initSig(){
+  var c=el('sig'); if(!c) return;
+  c.width=c.offsetWidth*2; c.height=300;
+  SIGCTX=c.getContext('2d'); SIGCTX.scale(2,2);
+  SIGCTX.lineWidth=2; SIGCTX.lineCap='round'; SIGCTX.strokeStyle='#0f1a18';
+  SIGDRAWN=false;
+  var drawing=false;
+  function pos(e){ var r=c.getBoundingClientRect();
+    var t=e.touches?e.touches[0]:e; return {x:t.clientX-r.left,y:t.clientY-r.top}; }
+  function start(e){ drawing=true; SIGDRAWN=true; var p=pos(e); SIGCTX.beginPath(); SIGCTX.moveTo(p.x,p.y); e.preventDefault(); }
+  function move(e){ if(!drawing) return; var p=pos(e); SIGCTX.lineTo(p.x,p.y); SIGCTX.stroke(); e.preventDefault(); }
+  function end(){ drawing=false; }
+  c.addEventListener('mousedown',start); c.addEventListener('mousemove',move);
+  c.addEventListener('mouseup',end); c.addEventListener('mouseleave',end);
+  c.addEventListener('touchstart',start); c.addEventListener('touchmove',move); c.addEventListener('touchend',end);
+}
+function clearSig(){ var c=el('sig'); if(SIGCTX) SIGCTX.clearRect(0,0,c.width,c.height); SIGDRAWN=false; }
+
+function submitHandover(id,type){
+  var photos=Object.keys(PHSTATE).map(function(k){ return PHSTATE[k]; });
+  if(photos.length<6) return mmsg('مطلوب ٦ صور — رفعت '+photos.length+' فقط');
+  if(!el('h-odo').value) return mmsg('قراءة العداد مطلوبة');
+  if(!SIGDRAWN) return mmsg('توقيع العميل مطلوب');
+  if(type==='out'&&!el('h-id').checked) return mmsg('لازم تأكيد التحقق من الهوية والرخصة');
+
+  var dmg=[];
+  String(el('h-dmg').value||'').split('\n').forEach(function(l){
+    if(!l.trim()) return;
+    var p=l.split('|');
+    dmg.push({ d:(p[0]||'').trim(), cost:num(p[1]) });
+  });
+  var acc=[];
+  document.querySelectorAll('#h-acc .chip.on').forEach(function(n){ acc.push(n.dataset.acc); });
+
+  var sig=el('sig').toDataURL('image/png');
+  if(sig.length>45000) sig='sign-'+id+'-'+type+'.png';
+
+  var payload={ session:ESESS, booking_id:id, odometer:el('h-odo').value,
+    fuel_level:el('h-fuel').value, cleanliness:el('h-clean').value,
+    photos:photos, damages:dmg, accessories:acc, sign_method:'screen',
+    customer_sign:sig, notes:el('h-notes').value };
+
+  var btn=el('h-go'); btn.disabled=true; btn.textContent='جاري الحفظ…';
+  if(type==='out'){
+    payload.id_verified=true; payload.deposit_method=el('h-dep').value;
+    apiPost('admin_handover_out',payload).then(function(){
+      closeModal(); toast('تم التسليم — الحجز جاري الإيجار'); viewOps(); adminKpis();
+    }).catch(function(e){ btn.disabled=false; btn.textContent='إتمام التسليم'; mmsg(e.message); });
+  } else {
+    payload.fines=el('h-fines').value;
+    apiPost('admin_handover_in',payload).then(function(r){
+      var c=r.charges;
+      closeModal();
+      openModal('تسوية الحجز '+id,
+        '<div class="msg ok">تم إغلاق العقد ✅</div>'+
+        '<div class="kv"><span>الكيلومترات المستخدمة</span><b>'+c.used_km+' كم</b></div>'+
+        '<div class="kv"><span>ساعات التأخير</span><b>'+c.late_hours+'</b></div>'+
+        '<div class="kv"><span>رسوم التأخير</span><b>'+money(c.late_charge,true)+'</b></div>'+
+        '<div class="kv"><span>كيلومترات إضافية</span><b>'+money(c.extra_km_charge,true)+'</b></div>'+
+        '<div class="kv"><span>وقود</span><b>'+money(c.fuel_charge,true)+'</b></div>'+
+        '<div class="kv"><span>تنظيف</span><b>'+money(c.cleaning_charge)+'</b></div>'+
+        '<div class="kv"><span>أضرار</span><b>'+money(c.damage_charge)+'</b></div>'+
+        '<div class="kv"><span>مخالفات</span><b>'+money(c.fines)+'</b></div>'+
+        '<div class="kv tot"><span>إجمالي المستحقات</span><b>'+money(c.total,true)+'</b></div>'+
+        '<div class="kv"><span>المسترد من الأمانة</span><b style="color:var(--ok)">'+money(c.refund,true)+'</b></div>'+
+        (c.due_from_customer?'<div class="kv"><span>مطلوب من العميل</span><b style="color:var(--err)">'+money(c.due_from_customer,true)+'</b></div>':''));
+      viewOps(); adminKpis();
+    }).catch(function(e){ btn.disabled=false; btn.textContent='إتمام الاستلام والتسوية'; mmsg(e.message); });
+  }
+}
+
+function chargeForm(id){
+  openModal('تسجيل مخالفة على '+id,
+    '<div class="msg info">تاريخ المخالفة لازم يكون داخل مدة الإيجار، والنظام يرفض غير كده.</div>'+
+    '<div class="form2">'+
+    '<div class="f"><span class="lbl">النوع</span><select id="pc-t">'+
+      '<option value="violation">مخالفة مرورية</option><option value="toll">رسوم طرق</option>'+
+      '<option value="damage_late">ضرر ظهر لاحقًا</option><option value="other">أخرى</option></select></div>'+
+    '<div class="f"><span class="lbl">المبلغ</span><input id="pc-a" type="number"></div>'+
+    '<div class="f"><span class="lbl">تاريخ المخالفة</span><input id="pc-d" type="date"></div>'+
+    '<div class="f full"><span class="lbl">الوصف</span><input id="pc-x"></div></div>',
+    '<div class="sp"></div><button class="btn btn-g" onclick="closeModal()">إلغاء</button>'+
+    '<button class="btn btn-p" id="pc-go">تسجيل</button>');
+  el('pc-go').onclick=function(){
+    apiPost('admin_add_charge',{session:ESESS,booking_id:id,type:el('pc-t').value,
+      amount:el('pc-a').value,violation_date:el('pc-d').value,description:el('pc-x').value})
+      .then(function(r){ closeModal(); toast('تم التسجيل · الإجمالي '+money(r.total)); adminKpis(); })
+      .catch(function(e){ mmsg(e.message); });
+  };
+}
+
+/* ---------- الجداول العامة ---------- */
+function viewTable(tab){
   TAB=tab;
-  document.querySelectorAll('#a-menu a').forEach(function(a){ a.classList.toggle('on', a.dataset.tab===tab); });
-  var meta=SCHEMA.tabs[tab];
-  el('a-title').textContent=meta.label;
-  el('a-table').innerHTML='';
-  el('a-empty').hidden=true;
-  el('a-count').textContent='…';
-  apiGet('admin_list',{session:SESSION, tab:tab, q:el('a-q').value, per:100}).then(function(d){
-    ROWS=d.rows; el('a-count').textContent=d.total;
-    renderTable(meta, d.rows);
-  }).catch(function(e){ toast(e.message,true); });
+  var meta=SCH.tabs[tab];
+  el('a-view').innerHTML='<div class="box" style="padding:0">'+
+    '<div class="ptool"><b style="font-size:16px">'+esc(meta.label)+'</b>'+
+    '<span class="tag" id="t-cnt">…</span><div class="sp"></div>'+
+    '<input type="search" id="tq" placeholder="بحث…">'+
+    '<button class="btn btn-sm btn-g" onclick="viewTable(\''+tab+'\')">تحديث</button>'+
+    '<button class="btn btn-sm btn-p" onclick="rowForm(null)">+ إضافة</button></div>'+
+    '<div class="tblwrap" id="t-body"><div class="skel" style="height:200px"></div></div></div>';
+  el('tq').addEventListener('keydown',function(e){ if(e.key==='Enter') loadTable(); });
+  loadTable();
 }
-
-function renderTable(meta, rows){
-  var t=el('a-table');
-  if(!rows.length){
-    t.innerHTML='';
-    el('a-empty').hidden=false;
-    el('a-empty').innerHTML='<b>لا توجد بيانات في '+esc(meta.label)+'</b>اضغط «إضافة» لتسجيل أول سجل.';
-    return;
-  }
-  el('a-empty').hidden=true;
-  var cols=meta.fields.filter(function(f){
-    return ['password_hash','otp_code','notes','internal_notes','content','answer','text','description'].indexOf(f.key)===-1;
-  }).slice(0,7);
-
-  t.innerHTML='<thead><tr>'+cols.map(function(c){ return '<th>'+esc(c.label.split('(')[0].trim())+'</th>'; }).join('')+
-    '<th></th></tr></thead><tbody>'+
-    rows.map(function(r,i){
-      return '<tr>'+cols.map(function(c){ return '<td>'+cell(r[c.key], c.key)+'</td>'; }).join('')+
-        '<td><button class="btn btn-sm btn-g" onclick="editRow('+i+')">تعديل</button></td></tr>';
-    }).join('')+'</tbody>';
+function loadTable(){
+  var meta=SCH.tabs[TAB];
+  apiGet('admin_list',{session:ESESS,tab:TAB,q:(el('tq')||{}).value||'',per:150}).then(function(d){
+    ROWS=d.rows; el('t-cnt').textContent=d.total;
+    if(!d.rows.length){ el('t-body').innerHTML='<div class="empty" style="border:0"><b>لا توجد بيانات</b>اضغط «إضافة».</div>'; return; }
+    var skip=['password_hash','otp_code','notes','internal_notes','content','answer','text','description',
+      'items_json','extras_json','photos_json','damages_json','accessories_json','chassis_no','features','images'];
+    var cols=meta.fields.filter(function(f){ return skip.indexOf(f.key)===-1; }).slice(0,8);
+    el('t-body').innerHTML='<table><thead><tr>'+cols.map(function(c){
+      return '<th>'+esc(c.label.split('(')[0].trim())+'</th>'; }).join('')+'<th></th></tr></thead><tbody>'+
+      d.rows.map(function(r,i){
+        return '<tr>'+cols.map(function(c){ return '<td>'+cell(r[c.key],c.key)+'</td>'; }).join('')+
+          '<td><button class="btn btn-sm btn-g" onclick="rowForm('+i+')">تعديل</button></td></tr>';
+      }).join('')+'</tbody></table>';
+  }).catch(function(e){ el('t-body').innerHTML='<div class="empty" style="border:0">'+esc(e.message)+'</div>'; });
 }
-
-function cell(v, key){
+function cell(v,key){
   var s=String(v==null?'':v);
-  if(key==='status'){
-    var k = (s==='active'||s==='available'||s==='paid'||s==='published'||s==='confirmed'||s==='done')?'ok'
-          : (s==='inactive'||s==='blocked'||s==='canceled'||s==='rejected'||s==='failed')?'no'
-          : s?'w':'';
-    return s?('<span class="tag '+k+'">'+esc(s)+'</span>'):'';
-  }
-  if(s.length>42) s=s.slice(0,42)+'…';
+  if(key==='status'||key==='docs_status') return s?statusTag(s):'';
+  if(key==='images'&&s) return '<img src="'+esc(s.split(',')[0])+'" style="width:54px;height:36px;object-fit:cover;border-radius:6px">';
+  if(s.length>38) s=s.slice(0,38)+'…';
   return esc(s);
 }
 
-/* ---------- الفورم ---------- */
 function fieldKind(f){
   var k=f.key, l=f.label||'';
-  if(TAB==='Settings') return {t: k==='note'?'area':'text'};   // الإعدادات كلها نص حر
+  if(TAB==='Settings') return {t:k==='note'?'area':'text'};
   if(/\(TRUE\/FALSE\)/.test(l)) return {t:'bool'};
   var m=l.match(/\(([^)]*\/[^)]*)\)/);
-  if(m && !/TRUE\/FALSE/.test(m[1])){
-    var opts=m[1].split('/').map(function(x){ return x.split('=')[0].trim(); }).filter(String);
-    if(opts.length>1 && opts.length<12) return {t:'select', options:opts};
+  if(m&&!/TRUE\/FALSE/.test(m[1])){
+    var o=m[1].split('/').map(function(x){ return x.split('=')[0].trim(); }).filter(String);
+    if(o.length>1&&o.length<14) return {t:'select',options:o};
   }
   if(/_at$|_date$|expiry$|^date$/.test(k)) return {t:'date'};
-  if(/price|cost|amount|total|fee|deposit|paid|remaining|discount|tax|value|odometer|seats|doors|luggage|year|count|limit|order|km|rating|priority|days|hours/.test(k)) return {t:'number'};
-  if(/notes|description|content|answer|text|features|images|photos|damages|parts|accessories|permissions|message|comment/.test(k)) return {t:'area'};
+  if(/price|cost|amount|total|fee|deposit|paid|remaining|discount|vat|value|odometer|seats|doors|luggage|year|count|limit|order|km|rating|priority|days|hours|buffer|liters|percent|lat|lng/.test(k)) return {t:'number'};
+  if(/notes|description|content|answer|text|features|images|photos|damages|parts|accessories|permissions|message|comment|json/.test(k)) return {t:'area'};
   if(k==='password_hash') return {t:'pass'};
   if(k==='email') return {t:'email'};
-  if(/phone|whatsapp/.test(k)) return {t:'tel'};
   return {t:'text'};
 }
 
-function openForm(row){
-  var meta=SCHEMA.tabs[TAB];
-  var isNew=!row;
-  row=row||{};
-  el('m-title').textContent=(isNew?'إضافة في ':'تعديل — ')+meta.label;
-  el('m-msg').innerHTML='';
-  el('m-del').hidden = isNew || ME.role!=='admin' || TAB==='Settings';
-  el('m-del').onclick=function(){ delRow(row[meta.id_field]); };
+function rowForm(i){
+  var meta=SCH.tabs[TAB], isNew=(i===null), row=isNew?{}:ROWS[i];
+  openModal((isNew?'إضافة في ':'تعديل — ')+meta.label,
+    '<div class="form2">'+meta.fields.map(function(f){
+      if(f.key==='_row') return '';
+      var kind=fieldKind(f), v=row[f.key]==null?'':String(row[f.key]);
+      var lab=esc(f.label.split('(')[0].trim());
+      var hint=/\(/.test(f.label)?'<small style="color:var(--mut);font-size:11px">'+esc(f.label.replace(/^[^(]*/,''))+'</small>':'';
+      if(f.key===meta.id_field&&isNew&&meta.auto_id)
+        hint='<small style="color:var(--mut);font-size:11px">يُولّد تلقائيًا لو تركته فاضي</small>';
+      if(kind.t==='pass')
+        return '<div class="f"><span class="lbl">'+lab+'</span><input type="password" data-k="'+f.key+'" '+
+          'placeholder="'+(isNew?'':'اتركه فاضي لعدم التغيير')+'"><small style="color:var(--mut);font-size:11px">يُحفظ مشفرًا</small></div>';
+      if(kind.t==='bool')
+        return '<div class="f" style="flex-direction:row;align-items:center;gap:9px"><input type="checkbox" '+
+          'data-k="'+f.key+'" '+(v.toUpperCase()==='TRUE'?'checked':'')+' style="width:18px;height:18px;accent-color:var(--p)">'+
+          '<span class="lbl" style="margin:0">'+lab+'</span></div>';
+      if(kind.t==='select')
+        return '<div class="f"><span class="lbl">'+lab+'</span><select data-k="'+f.key+'"><option value=""></option>'+
+          kind.options.map(function(o){ return '<option value="'+esc(o)+'"'+(v===o?' selected':'')+'>'+esc(o)+'</option>'; }).join('')+
+          '</select></div>';
+      if(kind.t==='area')
+        return '<div class="f full"><span class="lbl">'+lab+'</span><textarea data-k="'+f.key+'">'+esc(v)+'</textarea>'+hint+'</div>';
+      var type=kind.t==='number'?'number':kind.t==='email'?'email':'text';
+      return '<div class="f"><span class="lbl">'+lab+'</span><input type="'+type+'" data-k="'+f.key+'" '+
+        'value="'+esc(v)+'"'+(!isNew&&f.key===meta.id_field?' readonly':'')+'>'+hint+'</div>';
+    }).join('')+'</div>',
+    (!isNew&&ME.role==='admin'&&['Settings','Invoices','Logs'].indexOf(TAB)===-1
+      ? '<button class="btn btn-r btn-sm" id="rf-del">حذف</button>' : '')+
+    '<div class="sp"></div><button class="btn btn-g" onclick="closeModal()">إلغاء</button>'+
+    '<button class="btn btn-p" id="rf-save">حفظ</button>');
 
-  el('m-form').innerHTML=meta.fields.map(function(f){
-    if(f.key==='_row') return '';
-    var kind=fieldKind(f), v=row[f.key]==null?'':String(row[f.key]);
-    var label=esc(f.label.split('(')[0].trim());
-    var hint=/\(/.test(f.label)?'<small>'+esc(f.label.replace(/^[^(]*/,''))+'</small>':'';
-    var dis='';
-    if(f.key===meta.id_field){
-      if(!isNew) dis=' readonly';
-      else if(meta.auto_id) hint='<small>يُولّد تلقائيًا لو تركته فاضي</small>';
-    }
-    if(f.key==='password_hash'){
-      return '<div class="f"><label>'+label+'</label><input type="password" data-k="'+f.key+'" placeholder="'+(isNew?'':'اتركه فاضي لعدم التغيير')+'">'+
-             '<small>يُحفظ مشفرًا</small></div>';
-    }
-    if(kind.t==='bool'){
-      return '<div class="f chk"><input type="checkbox" data-k="'+f.key+'" '+(String(v).toUpperCase()==='TRUE'?'checked':'')+'><label>'+label+'</label></div>';
-    }
-    if(kind.t==='select'){
-      return '<div class="f"><label>'+label+'</label><select data-k="'+f.key+'">'+
-        '<option value=""></option>'+kind.options.map(function(o){
-          return '<option value="'+esc(o)+'"'+(v===o?' selected':'')+'>'+esc(o)+'</option>'; }).join('')+
-        '</select></div>';
-    }
-    if(kind.t==='area'){
-      return '<div class="f full"><label>'+label+'</label><textarea data-k="'+f.key+'">'+esc(v)+'</textarea>'+hint+'</div>';
-    }
-    var type = kind.t==='number'?'number' : kind.t==='date'?'text' : kind.t==='email'?'email' : kind.t==='tel'?'tel':'text';
-    var ph = kind.t==='date'?' placeholder="YYYY-MM-DD"':'';
-    return '<div class="f"><label>'+label+'</label><input type="'+type+'" data-k="'+f.key+'" value="'+esc(v)+'"'+dis+ph+'>'+hint+'</div>';
-  }).join('');
-
-  el('m-save').onclick=function(){ saveForm(isNew); };
-  el('a-modal').hidden=false;
-}
-function closeModal(){ el('a-modal').hidden=true; }
-
-function saveForm(){
-  var row={};
-  el('m-form').querySelectorAll('[data-k]').forEach(function(i){
-    var k=i.dataset.k;
-    if(i.type==='checkbox') row[k]=i.checked?'TRUE':'FALSE';
-    else if(i.value!=='') row[k]=i.value;
-    else if(k!=='password_hash') row[k]='';
-  });
-  el('m-save').disabled=true; el('m-save').textContent='جاري الحفظ…';
-  apiPost('admin_save',{session:SESSION, tab:TAB, row:row}).then(function(d){
-    toast(d.mode==='create'?('تم الحفظ — الكود '+d.id):'تم التحديث');
-    closeModal(); loadTab(TAB); loadStats();
-  }).catch(function(e){
-    el('m-msg').innerHTML='<div class="msg err">'+esc(e.message)+'</div>';
-  }).then(function(){ el('m-save').disabled=false; el('m-save').textContent='حفظ'; });
+  if(el('rf-del')) el('rf-del').onclick=function(){
+    var b=this;
+    if(b.dataset.a!=='1'){ b.dataset.a='1'; b.textContent='اضغط مرة أخرى للحذف';
+      setTimeout(function(){ b.dataset.a='0'; b.textContent='حذف'; },4000); return; }
+    apiPost('admin_delete',{session:ESESS,tab:TAB,id:row[meta.id_field]}).then(function(){
+      closeModal(); toast('تم الحذف'); loadTable(); adminKpis();
+    }).catch(function(e){ mmsg(e.message); });
+  };
+  el('rf-save').onclick=function(){
+    var data={};
+    document.querySelectorAll('#m-body [data-k]').forEach(function(n){
+      var k=n.dataset.k;
+      if(n.type==='checkbox') data[k]=n.checked?'TRUE':'FALSE';
+      else if(n.value!=='') data[k]=n.value;
+      else if(k!=='password_hash') data[k]='';
+    });
+    var b=el('rf-save'); b.disabled=true; b.textContent='...';
+    apiPost('admin_save',{session:ESESS,tab:TAB,row:data}).then(function(r){
+      closeModal(); toast(r.mode==='create'?('تم الحفظ — الكود '+r.id):'تم التحديث');
+      loadTable(); adminKpis();
+    }).catch(function(e){ b.disabled=false; b.textContent='حفظ'; mmsg(e.message); });
+  };
 }
 
-function editRow(i){ openForm(ROWS[i]); }
-
-function delRow(id){
-  var b=el('m-del');
-  if(b.dataset.armed!=='1'){
-    b.dataset.armed='1'; b.textContent='اضغط مرة أخرى للحذف';
-    setTimeout(function(){ b.dataset.armed='0'; b.textContent='حذف'; }, 4000);
-    return;
-  }
-  apiPost('admin_delete',{session:SESSION, tab:TAB, id:id}).then(function(){
-    toast('تم الحذف'); closeModal(); loadTab(TAB); loadStats();
-  }).catch(function(e){ el('m-msg').innerHTML='<div class="msg err">'+esc(e.message)+'</div>'; });
+/* ---------- الإعدادات ---------- */
+function viewSettings(){
+  el('a-view').innerHTML='<div class="box"><h4>إعدادات الموقع</h4>'+
+    '<div id="st-body"><div class="skel" style="height:200px"></div></div></div>';
+  apiGet('admin_list',{session:ESESS,tab:'Settings',per:200}).then(function(d){
+    var rows=d.rows.filter(function(r){ return ['api_token','pwd_salt'].indexOf(String(r.key))===-1; }).reverse();
+    el('st-body').innerHTML='<div class="form2">'+rows.map(function(r){
+      return '<div class="f"><span class="lbl">'+esc(r.note||r.key)+'</span>'+
+        '<input data-s="'+esc(r.key)+'" value="'+esc(r.value)+'">'+
+        '<small style="color:var(--mut);font-size:10.5px;direction:ltr;text-align:start">'+esc(r.key)+'</small></div>';
+    }).join('')+'</div>'+
+    '<div style="display:flex;margin-top:16px"><div class="sp"></div>'+
+    '<button class="btn btn-p" id="st-save">حفظ الإعدادات</button></div>';
+    el('st-save').onclick=function(){
+      var vals={};
+      document.querySelectorAll('#st-body [data-s]').forEach(function(n){ vals[n.dataset.s]=n.value; });
+      var b=el('st-save'); b.disabled=true; b.textContent='...';
+      apiPost('admin_settings_save',{session:ESESS,values:vals}).then(function(){
+        b.disabled=false; b.textContent='حفظ الإعدادات'; toast('تم الحفظ');
+      }).catch(function(e){ b.disabled=false; b.textContent='حفظ الإعدادات'; toast(e.message,true); });
+    };
+  }).catch(function(e){ el('st-body').innerHTML='<div class="msg err">'+esc(e.message)+'</div>'; });
 }
-
-/* ---------- ربط أحداث اللوحة ---------- */
-function initAdmin(){
-  el('l-btn').addEventListener('click', doLogin);
-  el('l-pass').addEventListener('keydown', function(e){ if(e.key==='Enter') doLogin(); });
-  el('a-new').addEventListener('click', function(){ openForm(null); });
-  el('a-refresh').addEventListener('click', function(){ loadTab(TAB); loadStats(); });
-  el('a-q').addEventListener('keydown', function(e){ if(e.key==='Enter') loadTab(TAB); });
-  el('a-logout').addEventListener('click', function(){
-    apiPost('admin_logout',{session:SESSION}).catch(function(){});
-    sessionStorage.removeItem('darbak_session'); SESSION=null; ME=null;
-    location.hash=''; showSite();
-  });
-  el('a-modal').addEventListener('click', function(e){ if(e.target===el('a-modal')) closeModal(); });
-}
-
-/* ---------- التوجيه ---------- */
-function route(){
-  if(location.hash==='#admin'){ showAdmin(); }
-  else { showSite(); }
-}
-window.addEventListener('hashchange', route);
-document.addEventListener('DOMContentLoaded', function(){
-  if(typeof Object.assign!=='function'){
-    Object.assign=function(t){ for(var i=1;i<arguments.length;i++){ var s=arguments[i]||{};
-      for(var k in s) if(Object.prototype.hasOwnProperty.call(s,k)) t[k]=s[k]; } return t; };
-  }
-  initAdmin();
-  initSite();
-  route();
-});
 </script>
 </body>
 </html>
